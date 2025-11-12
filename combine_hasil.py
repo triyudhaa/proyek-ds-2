@@ -16,7 +16,7 @@ def init_result():
     # ==== LOOP untuk baca & koreksi semua file ====
     for year in years:
         for period in periods:
-            filepath = f"LANDSAT8/Landsat8_Predict_{year}_{period}.tif"
+            filepath = f"LANDSAT8\Landsat8_Predict_{year}_{period}.tif"
 
             try:
                 # --- ekstraksi ---
@@ -47,7 +47,7 @@ def init_result():
                 
     for year in years:
         for period in periods:
-            filepath = f"SENTINEL2/prediction_final_{year}_{period}.tif"
+            filepath = f"SENTINEL2\prediction_final_{year}_{period}.tif"
 
             try:
                 # --- ekstraksi ---
@@ -112,7 +112,7 @@ def generate_coastline_all():
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
     plt.axis("equal")
-    plt.savefig("coastlines/coastline_combined_all.png", dpi=300, bbox_inches='tight')
+    plt.savefig("coastlines\coastline_combined_all.png", dpi=300, bbox_inches='tight')
     # plt.show()
     
     return coastlines_all
@@ -167,12 +167,12 @@ def avg_coastline(x, num_points=1000):
 
     for i, data in enumerate(avg_coastlines):
         xs, ys = data["mean_coastline"][:, 0], data["mean_coastline"][:, 1]
-        plt.plot(xs, ys, color=colors[i], linewidth=1.5, label=f"Average {data["group_name"]}")
+        plt.plot(xs, ys, color=colors[i], linewidth=1.5, label=f'Average {data["group_name"]}')
 
     plt.title(f"Average Coastlines {x} Lines")
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
     plt.legend(loc="best", fontsize=9)
     plt.axis("equal")
-    plt.savefig(f'coastlines/coastline_combined_{x}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'coastlines\coastline_combined_{x}.png', dpi=300, bbox_inches='tight')
     plt.show()

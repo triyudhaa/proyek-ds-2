@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisa Perubahan Garis Pantai Kelurahan Kohod, Kabupaten Tangerang</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../static/styles/dashboardStyle.css">
+</head>
+<div class="container">
+    <div class="header">Analisa Perubahan Garis Pantai Kelurahan Kohod, Kabupaten Tangerang</div>
+    <div class="sidebar-content">
+        <div class="sidebar">
+            <div class="sidebar-group" id="dashboard">
+                <img src="../static/assets/dashboard.png">
+                Dashboard
+            </div>
+
+            <div class="sidebar-group" id="detail">
+                <img src="../static/assets/detail.png">
+                Detail
+            </div>
+
+            <div class="sidebar-group" id="comparison">
+                <img src="../static/assets/compare.png">
+                Perbandingan garis
+            </div>
+
+            <div class="sidebar-group" id="prediction">
+                <img src="../static/assets/prediction.png">
+                Prediksi Baru
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="content-title">
+                Tampilan Garis Pengamatan
+            </div>
+
+            <div class="pilih-garis">
+                <div class="garis-group" id="garis-2">2 Garis</div>
+                <div class="garis-group" id="garis-4">4 Garis</div>
+                <div class="garis-group" id="garis-6">6 Garis</div>
+            </div>
+
+            <div class="img-garis">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<body>
+
+</body>
+
+</html>
+
+<script>
+    const garisGroups = document.querySelectorAll('.garis-group');
+    const imgContainer = document.querySelector('.img-garis');
+    garisGroups.forEach(g => {
+        g.addEventListener('click', () => {
+            garisGroups.forEach(el => el.classList.remove('active'));
+            g.classList.add('active');
+
+            let imgSrc = '';
+            if (g.id === 'garis-2') {
+                imgSrc = '../coastlines/coastline_combined_2.png';
+            } else if (g.id === 'garis-4') {
+                imgSrc = '../coastlines/coastline_combined_4.png';
+            } else if (g.id === 'garis-6') {
+                imgSrc = '../coastlines/coastline_combined_6.png';
+            }
+
+            imgContainer.innerHTML = `<img src="${imgSrc}" alt="${g.textContent}">`;
+        });
+    });
+</script>
