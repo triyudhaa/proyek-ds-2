@@ -51,7 +51,7 @@ body {
 
 .side-container {
     padding: 10px;
-    width: 250px;
+    width: 270px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -114,16 +114,48 @@ body {
 .button-prediksi-garis {
     display: flex;
     font-size: small;
+    column-gap: 5px;
 }
 
 .button-prediksi-garis span {
     margin-top: 10px;
-    padding: 5px 10px 5px 10px;
+    padding: 5px 20px 5px 20px;
     cursor: pointer;
 }
 
 span#prediksi {
     background-color: #103A5E;
     color: white;
-    border-radius: 7px;
+    border-radius: 20px;
+}
+
+span#garis {
+    background-color: #ebebeb;
+    color: #103A5E;
+    border-radius: 20px;
+}
+
+.perubahan-daerah {
+    margin-top: 10px;
+}
+
+#title-perubahan {
+    color: #103A5E;
+    font-weight: 500;
+}
+
+.perubahan-group {
+    margin-top: 10px;
+    border: 1.5px solid black;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: small;
+}
+
+#periode {
+    font-weight: 600;
+    color: #103A5E;
 }
