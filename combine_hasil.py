@@ -16,11 +16,11 @@ def init_result():
     # ==== LOOP untuk baca & koreksi semua file ====
     for year in years:
         for period in periods:
-            filepath = f"LANDSAT8\Landsat8_Predict_{year}_{period}.tif"
+            filepath = f"LANDSAT8/Landsat8_Predict_{year}_{period}.tif"
 
             try:
                 # --- ekstraksi ---
-                contours, contours_geo, meta, array = coastline.extract_coastline_from_geotiff_landsat(
+                ocean_mask, contours_pixel, contours_geo, meta, array = coastline.extract_coastline_from_geotiff(
                     filepath,
                     year,
                     period,
@@ -47,7 +47,7 @@ def init_result():
                 
     for year in years:
         for period in periods:
-            filepath = f"SENTINEL2\prediction_final_{year}_{period}.tif"
+            filepath = f"SENTINEL2/prediction_final_{year}_{period}.tif"
 
             try:
                 # --- ekstraksi ---
@@ -112,10 +112,50 @@ def generate_coastline_all():
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
     plt.axis("equal")
-    plt.savefig("coastlines\coastline_combined_all.png", dpi=300, bbox_inches='tight')
+    plt.savefig("coastlines/coastline_combined_all.png", dpi=300, bbox_inches='tight')
     # plt.show()
     
     return coastlines_all
+
+def generate_coastline_compare(curYear):
+    coastlines_all = generate_coastline_all()
+    years = [curYear, curYear+1]
+    periods = ["Jan_Jun", "Jul_Des", "q1", "q2", "q3", "q4"]
+    colors = cm.tab20(np.linspace(0, 1, len(years) * len(periods)))  # palet warna
+    
+    # Mapping kombinasi (year, period) ke warna unik
+    color_map = {}
+    i = 0
+    for y in years:
+        for p in periods:
+            color_map[(y, p)] = colors[i]
+            i += 1
+    # --- Plot gabungan ---
+    plt.figure(figsize=(12, 10))
+    
+    for item in coastlines_all:
+        year = item["year"]
+        period = item["period"]
+        coastline = item["coastline"]
+        
+        if (year in years):
+            for contour in coastline:
+                xs = [pt[0] for pt in contour]  # x (longitude)
+                ys = [pt[1] for pt in contour]  # y (latitude)
+                plt.plot(xs, ys, color=color_map[(year, period)], linewidth=1,
+                        label=f"{period} {year}")
+
+    # Hilangkan duplikat di legend
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = dict(zip(labels, handles))
+    plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05, 1), loc="upper left")
+
+    plt.title("Gabungan Coastline")
+    plt.xlabel("Longitude")
+    plt.ylabel("Latitude")
+    plt.axis("equal")
+    plt.savefig(f"coastlines/coastline_combined_{curYear}-{curYear+1}.png", dpi=300, bbox_inches='tight')
+    plt.show()
 
 def interpolate_line(line, num_points):
     """Interpolasi garis pantai agar punya jumlah titik seragam."""
@@ -174,5 +214,44 @@ def avg_coastline(x, num_points=1000):
     plt.ylabel("Latitude")
     plt.legend(loc="best", fontsize=9)
     plt.axis("equal")
-    plt.savefig(f'coastlines\coastline_combined_{x}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'coastlines/coastline_combined_{x}.png', dpi=300, bbox_inches='tight')
+    plt.show()
+
+def generate_coastline_compare_avg(curYear, num_points=1000):
+    coastlines_all = generate_coastline_all()
+    year_groups = {
+        f"{curYear}": [curYear],
+        f"{curYear+1}": [curYear+1]
+    }
+    avg_coastlines = []
+
+    for group_name, group_years in year_groups.items():
+        coastlines = []
+        for c in coastlines_all:
+            if c["year"] in group_years:
+                coastline_interp = interpolate_line(c["coastline"][0], num_points)
+                coastlines.append(coastline_interp)
+        mean_coastline = np.mean(coastlines, axis=0)
+        avg_coastlines.append({
+            "group_name": group_name,
+            "mean_coastline": mean_coastline
+        })
+
+    colors = cm.plasma(np.linspace(0, 1, len(avg_coastlines)))
+    plt.figure(figsize=(12, 10))
+
+    for i, item in enumerate(avg_coastlines):
+        group_name = item["group_name"]
+        mean_coastline = item["mean_coastline"]
+
+        xs = mean_coastline[:, 0]
+        ys = mean_coastline[:, 1]
+        plt.plot(xs, ys, color=colors[i], linewidth=2, label=f"{group_name}")
+
+    plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
+    plt.title(f"Coastline Rata-rata Tahun {curYear}–{curYear+1}")
+    plt.xlabel("Longitude")
+    plt.ylabel("Latitude")
+    plt.axis("equal")
+    plt.savefig(f"coastlines/coastline_avg_{curYear}-{curYear+1}.png", dpi=300, bbox_inches='tight')
     plt.show()
