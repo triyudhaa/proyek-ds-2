@@ -4,12 +4,15 @@
 
 body {
     margin: 0px;
+    overflow-y: scroll;
 }
 
 .container {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    width: 100%;
+    max-width: 1280px;
 }
 
 .header {
@@ -52,6 +55,7 @@ body {
 .side-container {
     padding: 10px;
     width: 270px;
+    flex-shrink: 0;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -121,19 +125,18 @@ body {
     margin-top: 10px;
     padding: 5px 20px 5px 20px;
     cursor: pointer;
+    border-radius: 20px;
 }
 
-span#prediksi {
+.button-prediksi-garis span:hover {
+    background-color: #d0dbe3;
+}
+
+.button-prediksi-garis span.active {
     background-color: #103A5E;
     color: white;
-    border-radius: 20px;
 }
 
-span#garis {
-    background-color: #ebebeb;
-    color: #103A5E;
-    border-radius: 20px;
-}
 
 .perubahan-daerah {
     margin-top: 10px;
@@ -158,4 +161,20 @@ span#garis {
 #periode {
     font-weight: 600;
     color: #103A5E;
+}
+
+.images-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#desc-kosong {
+    display: block;
+    text-align: center;
+    width: 100%;
+    font-weight: 600;
+    color: #103A5E;
+    font-style: italic;
 }
