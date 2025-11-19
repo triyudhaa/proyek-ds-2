@@ -54,6 +54,7 @@ body {
     flex-direction: column;
     justify-content: space-evenly;
     gap: 5px;
+    margin-top: 10px;
 }
 
 .start-year, .end-year{
@@ -143,32 +144,30 @@ body {
     cursor: pointer;
 }
 
-.button-prediksi-garis {
+.button-satelit {
     display: flex;
     font-size: small;
     column-gap: 5px;
+    align-items: center;
+    justify-content: center;
 }
 
 .hidden {
     display: none;
 }
 
-.button-prediksi-garis span {
+.button-satelit span.active {
+    background-color: #103A5E !important;
+    color: white !important;
+}
+
+.button-satelit span {
     margin-top: 10px;
-    padding: 5px 20px 5px 20px;
-    cursor: pointer;
-}
-
-span#prediksi {
-    background-color: #103A5E;
-    color: white;
-    border-radius: 20px;
-}
-
-span#garis {
     background-color: #ebebeb;
     color: #103A5E;
     border-radius: 20px;
+    padding: 5px 20px 5px 20px;
+    cursor: pointer;
 }
 
 .perubahan-daerah {
