@@ -4,8 +4,6 @@ app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.jinja_env.auto_reload = True
 
-if __name__ == "__main__":
-    app.run(debug=True)
 
 @app.route("/")
 def dashboard():
@@ -22,3 +20,6 @@ def predict():
 @app.route("/comparison")
 def comparison():
     return render_template('comparison.html')
+
+if __name__ == "__main__":
+    app.run(debug=True)
