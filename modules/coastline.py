@@ -69,19 +69,12 @@ def extract_coastline_from_geotiff(filepath, year, period, water_value=1, land_v
         array = np.where(array == meta['nodata'], land_value, array)
 
     # Step 2: Lakukan flood fill dan sliding window correction
-    array = clean_mask(array, target_value=1, min_size=7000)
+    array = clean_mask(array, target_value=1, min_size=10000)
     array = clean_mask(array, target_value=0, min_size=500)
     array = sliding_window_majority(array, window_size=ws)
 
     # Pastikan array binary (0 dan 1)
     water_mask = (array == water_value)
-    
-    # plot sebelum  smoothing 
-    # plt.figure(figsize=(8, 8))
-    # plt.imshow(array, cmap="coolwarm")
-    # plt.axis('off')
-    # plt.title(f"Prediction After Smoothing - {year}_{period}")
-    # plt.show()
     
     # plot setelah smoothing 
     # plt.figure(figsize=(8, 8))

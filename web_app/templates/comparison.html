@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisa Perubahan Garis Pantai Kelurahan Kohod, Kabupaten Tangerang</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="../static/styles/comparisonStyle.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">Analisa Perubahan Garis Pantai Kelurahan Kohod, Kabupaten Tangerang</div>
+        <div class="sidebar-content">
+            <div class="sidebar">
+                <div class="sidebar-group" id="dashboard">
+                    <img src="../static/assets/dashboard.png">
+                    Dashboard
+                </div>
+
+                <div class="sidebar-group" id="detail">
+                    <img src="../static/assets/detail.png">
+                    Detail
+                </div>
+
+                <div class="sidebar-group" id="comparison">
+                    <img src="../static/assets/compare.png">
+                    Perbandingan Garis
+                </div>
+
+                <div class="sidebar-group" id="prediction">
+                    <img src="../static/assets/prediction.png">
+                    Prediksi Baru
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="side-container">
+                    <div class="select-menu">
+                        <div class="select-btn">
+                            <span class="sBtn-text">Pilih Tahun</span>
+                            <i class="bx bx-chevron-down"></i>
+                        </div>
+                        <ul class="options">
+                            <li class="option">
+                                <span class="option-text" data-value="2013-2014">2013-2014</span>
+                            </li>
+                            <li class="option">
+                                <span class="option-text" data-value="2014-2015">2014-2015</span>
+                            </li>
+                            <li class="option">
+                                <span class="option-text" data-value="2015-2016">2015-2016</span>
+                            </li>
+                            <li class="option">
+                                <span class="option-text" data-value="2016-2017">2016-2017</span>
+                            </li>
+                            <li class="option">
+                                <span class="option-text" data-value="2017-2018">2017-2018</span>
+                            </li>
+                            <li class="option">
+                                <span class="option-text" data-value="2018-2019">2018-2019</span>
+                            </li>
+                            <li class="option">
+                                <span class="option-text" data-value="2019-2020">2019-2020</span>
+                            </li>
+                            <li class="option">
+                                <span class="option-text" data-value="2020-2021">2020-2021</span>
+                            </li>
+                            <li class="option">
+                                <span class="option-text" data-value="2021-2022">2021-2022</span>
+                            </li>
+                            <li class="option">
+                                <span class="option-text" data-value="2022-2023">2022-2023</span>
+                            </li>
+                            <li class="option">
+                                <span class="option-text" data-value="2023-2024">2023-2024</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="button-prediksi-garis">
+                        <span id="prediksi">Hasil Prediksi</span>
+                        <span id="garis">Garis Pantai</span>
+                    </div>
+
+                    <div class="perubahan-daerah">
+                        <span id="title-perubahan">Analisis Perubahan Daerah</span>
+
+                        <div class="perubahan-group">
+                            <span id="periode">{StartDate} - {EndDate}</span>
+                            <div class="deskripsi-group">
+                                <span id="deskripsi">Perbandingan dengan </span>
+                                <span>{StartDate-1} - {EndDate-1}</span>
+                            </div>
+                            <div class="akresi-group">
+                                <span>Akresi Daerah:</span>
+                                <span>xx</span>
+                            </div>
+
+                            <div class="abrasi-group">
+                                <span>Abrasi Daerah:</span>
+                                <span>xx</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="images-container">
+                    <span class="curImage"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+<script>
+    const optionMenu = document.querySelector(".select-menu"),
+        selectBtn = optionMenu.querySelector(".select-btn"),
+        options = optionMenu.querySelectorAll(".option"),
+        sBtn_text = optionMenu.querySelector(".sBtn-text");
+    selectBtn.addEventListener("click", () => optionMenu.classList.toggle("active"));
+    options.forEach(option => {
+        option.addEventListener("click", () => {
+            const optionText = option.querySelector(".option-text");
+            const selectedValue = optionText.getAttribute("data-value");
+            const selectedLabel = optionText.innerText;
+            sBtn_text.innerText = selectedLabel;
+            optionMenu.classList.remove("active");
+            console.log(selectedValue);
+        });
+    });
+</script>

@@ -1,0 +1,161 @@
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    margin: 0px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.header {
+    padding: 12px;
+    height: 20px;
+    text-align: center;
+}
+
+.sidebar-content {
+    display: flex;
+    flex: 1;
+}
+
+.sidebar {
+    background-color: #103A5E;
+    color: white;
+    padding: 10px;
+    width: 270px;
+}
+
+.sidebar-group {
+    display: flex;
+    padding: 12px;
+    column-gap: 10px;
+    cursor: pointer;
+}
+
+#comparison {
+    background-color: #808D92;
+    border-radius: 5px;
+}
+
+.main-content {
+    width: 100%;
+    display: flex;
+    text-align: center;
+    border-top: 1px solid #808D92;
+}
+
+.side-container {
+    padding: 10px;
+    width: 270px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.select-menu {
+    width: 200px;
+}
+
+.select-menu .select-btn {
+    display: flex;
+    background: #fff;
+    padding: 10px;
+    font-weight: 600;
+    border-radius: 8px;
+    align-items: center;
+    cursor: pointer;
+    justify-content: space-between;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    color: #103A5E;
+}
+
+.select-btn i {
+    transition: 0.3s;
+}
+
+.select-menu.active .select-btn i {
+    transform: rotate(-180deg);
+}
+
+.select-menu .options {
+    position: relative;
+    padding: 20px;
+    margin-top: 10px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+
+.select-menu.active .options {
+    display: block;
+}
+
+.options .option {
+    display: flex;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 8px;
+    align-items: center;
+    background: #fff;
+}
+
+.options .option:hover {
+    background: #F2F2F2;
+}
+
+.option .option-text {
+    color: #103A5E;
+}
+
+.button-prediksi-garis {
+    display: flex;
+    font-size: small;
+    column-gap: 5px;
+}
+
+.button-prediksi-garis span {
+    margin-top: 10px;
+    padding: 5px 20px 5px 20px;
+    cursor: pointer;
+}
+
+span#prediksi {
+    background-color: #103A5E;
+    color: white;
+    border-radius: 20px;
+}
+
+span#garis {
+    background-color: #ebebeb;
+    color: #103A5E;
+    border-radius: 20px;
+}
+
+.perubahan-daerah {
+    margin-top: 10px;
+}
+
+#title-perubahan {
+    color: #103A5E;
+    font-weight: 500;
+}
+
+.perubahan-group {
+    margin-top: 10px;
+    border: 1.5px solid black;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: small;
+}
+
+#periode {
+    font-weight: 600;
+    color: #103A5E;
+}
