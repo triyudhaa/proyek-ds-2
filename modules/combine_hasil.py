@@ -2,10 +2,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import random
+import os
 random.seed(42)
 np.random.seed(42)
 
 import coastline
+
+# --- Tentukan path folder utama proyek ---
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # naik 1 level dari modules/
+OUTPUT_DIR = os.path.join(BASE_DIR, "web_app", "static", "assets", "coastlines")
+
+# --- pastikan folder output ada ---
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def init_result():
     coastlines_all = []
@@ -112,7 +120,7 @@ def generate_coastline_all():
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
     plt.axis("equal")
-    plt.savefig("coastlines/coastline_combined_all.png", dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(OUTPUT_DIR, "coastline_combined_all.png"),dpi=300, bbox_inches='tight')
     # plt.show()
     
     return coastlines_all
@@ -154,7 +162,9 @@ def generate_coastline_compare(curYear):
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
     plt.axis("equal")
-    plt.savefig(f"coastlines/coastline_combined_{curYear}-{curYear+1}.png", dpi=300, bbox_inches='tight')
+    # plt.savefig(f"web_app/coastlines/coastline_combined_{curYear}-{curYear+1}.png", dpi=300, bbox_inches='tight')
+    out_path = os.path.join(OUTPUT_DIR, f"coastline_combined_{curYear}-{curYear+1}.png")
+    plt.savefig(out_path, dpi=300, bbox_inches='tight')
     plt.show()
 
 def interpolate_line(line, num_points):
@@ -214,7 +224,8 @@ def avg_coastline(x, num_points=1000):
     plt.ylabel("Latitude")
     plt.legend(loc="best", fontsize=9)
     plt.axis("equal")
-    plt.savefig(f'coastlines/coastline_combined_{x}.png', dpi=300, bbox_inches='tight')
+    # plt.savefig(os.path.join(OUTPUT_DIR, f"coastline_combined_{x}.png"), dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(OUTPUT_DIR, f"coastline_combined_{x}.png"),dpi=300, bbox_inches='tight')
     plt.show()
 
 def generate_coastline_compare_avg(curYear, num_points=1000):
@@ -253,5 +264,7 @@ def generate_coastline_compare_avg(curYear, num_points=1000):
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
     plt.axis("equal")
-    plt.savefig(f"coastlines/coastline_avg_{curYear}-{curYear+1}.png", dpi=300, bbox_inches='tight')
+    # plt.savefig(f"coastlines/coastline_avg_{curYear}-{curYear+1}.png", dpi=300, bbox_inches='tight')
+    out_path = os.path.join(OUTPUT_DIR, f"coastline_avg_{curYear}-{curYear+1}.png")
+    plt.savefig(out_path, dpi=300, bbox_inches='tight')
     plt.show()
