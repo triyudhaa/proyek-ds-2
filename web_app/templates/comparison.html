@@ -138,9 +138,9 @@
                         </button>
                     </form>
 
-                    <div class="button-prediksi-garis hidden">
-                        <span id="prediksi">Rata-Rata</span>
-                        <span id="garis">Keseluruhan</span>
+                    <div class="button-mean-all hidden">
+                        <span id="mean">Rata-Rata</span>
+                        <span id="all">Keseluruhan</span>
                     </div>
 
                     <div class="perubahan-daerah hidden">
@@ -207,6 +207,29 @@ document.querySelectorAll(".select-menu").forEach(menu => {
 
 });
 
+// === Mean button ===
+function setDefaultMean() {
+    document.getElementById("mean").classList.add("active");
+    document.getElementById("all").classList.remove("active");
+    document.querySelector(".curImage").innerText += "\nmean";
+}
+
+const meanBtn = document.getElementById("mean");
+const allBtn = document.getElementById("all");
+const curImage = document.querySelector(".curImage");
+
+meanBtn.addEventListener("click", () => {
+    meanBtn.classList.add("active");
+    allBtn.classList.remove("active");
+    curImage.innerText += "\nmean";
+});
+
+allBtn.addEventListener("click", () => {
+    allBtn.classList.add("active");
+    meanBtn.classList.remove("active");
+    curImage.innerText += "\nall";
+});
+
 
 // === Submit behavior ===
 document.querySelector(".submit").addEventListener("click", function (e) {
@@ -216,17 +239,22 @@ document.querySelector(".submit").addEventListener("click", function (e) {
     const endYear = document.querySelector(".end-year .sBtn-text").innerText;
 
     if (startYear === "Pilih Tahun" || endYear === "Pilih Tahun") {
-        alert("Silakan pilih tahun awal dan tahun akhir!");
+        alert("Invalid Input. Isi kedua input.");
         return;
     }
 
     else if (startYear === endYear) {
-        alert("Silakan pilih tahun awal dan tahun akhir yang berbeda");
+        alert("Invalid Input. Tahun awal harus berbeda dari tahun akhir.");
+        return;
+    }
+
+    else if (startYear > endYear) {
+        alert("Invalid Input. Tahun awal tidak boleh lebih besar dari tahun akhir.");
         return;
     }
 
     // === Tampilkan bagian yang tersembunyi ===
-    document.querySelector(".button-prediksi-garis").classList.remove("hidden");
+    document.querySelector(".button-mean-all").classList.remove("hidden");
     document.querySelector(".perubahan-daerah").classList.remove("hidden");
     document.querySelector(".images-container").classList.remove("hidden");
 
@@ -239,5 +267,8 @@ document.querySelector(".submit").addEventListener("click", function (e) {
 
     document.querySelector(".deskripsi-group span:nth-child(2)").innerText =
         `${startYear - 1} - ${endYear - 1}`;
+    
+    // === SET DEFAULT STATE (MEAN) ===
+    setDefaultMean();
 });
 </script>

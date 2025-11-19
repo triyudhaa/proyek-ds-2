@@ -153,23 +153,41 @@ body {
     display: none;
 }
 
-.button-prediksi-garis span {
+/* .button-mean-all span {
     margin-top: 10px;
+    padding: 5px 20px 5px 20px;
+    cursor: pointer;
+} */
+
+.button-mean-all {
+    margin-top: 10px;
+}
+
+.button-mean-all span.active {
+    background-color: #103A5E !important;
+    color: white !important;
+}
+
+.button-mean-all span {
+    margin-top: 10px;
+    background-color: #ebebeb;
+    color: #103A5E;
+    border-radius: 20px;
     padding: 5px 20px 5px 20px;
     cursor: pointer;
 }
 
-span#prediksi {
+/* span#mean {
     background-color: #103A5E;
     color: white;
     border-radius: 20px;
 }
 
-span#garis {
+span#all {
     background-color: #ebebeb;
     color: #103A5E;
     border-radius: 20px;
-}
+} */
 
 .perubahan-daerah {
     margin-top: 10px;
