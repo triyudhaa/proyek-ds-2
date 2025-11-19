@@ -178,6 +178,14 @@
 </html>
 
 <script>
+/*side bar */
+document.querySelectorAll('.sidebar-group').forEach(item => {
+    item.addEventListener('click', () => {
+        const url = item.getAttribute('data-url');
+        window.location.href = url;
+    });
+});
+
 // === Dropdown Universal ===
 document.querySelectorAll(".select-menu").forEach(menu => {
 
