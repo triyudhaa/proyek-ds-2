@@ -69,71 +69,14 @@ body {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.select-menu{
+.select-date{
     width: 130px;
     position: relative;
-}
-
-.select-menu .select-btn {
-    display: flex;
-    background: #fff;
-    padding: 10px;
-    font-weight: 350;
-    border-radius: 8px;
-    align-items: center;
-    cursor: pointer;
-    justify-content: space-between;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    color: #000000;
-}
-
-.select-btn i{
-    transition: 0.3s;
-}
-
-.select-menu.active .select-btn i {
-    transform: rotate(-180deg);
-}
-
-.select-menu .options{
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-
-    padding: 20px;
-    margin-top: 10px;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-    display: none;
-
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height .25s ease;
-    z-index: 999; /* supaya menimpa elemen lain */
-}
-
-.select-menu.active .options{
-    display: block;
-    max-height: 200px; /* atau sesuai jumlah item */
-    overflow-y: auto;
-}
-
-.options .option{
-    display: flex;
-    cursor: pointer;
     padding: 5px;
+    border: none;
     border-radius: 8px;
-    align-items: center;
-    background: #fff;
-}
-
-.options .option:hover{
-    background: #F2F2F2;
-}
-
-.option .option-text{
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     color: #000000;
 }
 
@@ -170,27 +113,37 @@ body {
     cursor: pointer;
 }
 
-.perubahan-daerah {
-    margin-top: 10px;
+.images-container {
+    flex: 1;
+    width: auto;
 }
 
-#title {
-    color: #103A5E;
-    font-weight: 500;
-}
-
-.perubahan-group {
-    margin-top: 10px;
-    border: 1.5px solid black;
-    padding: 10px;
-    border-radius: 10px;
+.titleResult{
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    font-size: small;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid black;
 }
 
-#periode {
-    font-weight: 600;
+.button-result {
+    display: flex;
+    font-size: small;
+    column-gap: 5px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3px;
+}
+
+.button-result span.active {
+    background-color: #103A5E !important;
+    color: white !important;
+}
+
+.button-result span {
+    background-color: #ebebeb;
     color: #103A5E;
+    border-radius: 10px 10px 0px 0px;
+    padding: 5px 20px 5px 20px;
+    cursor: pointer;
 }

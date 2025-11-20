@@ -45,33 +45,15 @@
                     </div>
 
                     <form class="input">
-                        <div class="start-year">
-                            <span>Tahun Awal:</span>
-                            <div class="select-menu">
-                                <div class="select-btn">
-                                    <span class="sBtn-text">Pilih Tahun</span>
-                                    <i class="bx bx-chevron-down"></i>
-                                </div>
-                                <ul class="options">
-                                    <li class="option">
-                                        <span class="option-text" data-value="2013">2013</span></li>
-                                </ul>
-                            </div>
-                        </div>
+                        <label>
+                            Tanggal Awal:
+                            <input class="select-date" type="date" name="start-date"/>
+                        </label>
 
-                        <div class="end-year">
-                            <span>Tahun Akhir:</span>
-                            <div class="select-menu">
-                                <div class="select-btn">
-                                    <span class="sBtn-text">Pilih Tahun</span>
-                                    <i class="bx bx-chevron-down"></i>
-                                </div>
-                                <ul class="options">
-                                    <li class="option">
-                                        <span class="option-text" data-value="2013">2013</span></li>
-                                </ul>
-                            </div>
-                        </div>
+                        <label>
+                            Tanggal Akhir:
+                            <input class="select-date" type="date" name="end-date"/>
+                        </label>
 
                         <button class="submit">
                             Submit
@@ -80,7 +62,18 @@
                 </div>
 
                 <div class="images-container">
-                    <span class="curImage"></span>
+                    <div class="titleResult">
+                        <span class="curImage"></span>
+                        <span class="range-date">Rentang Tanggal</span>
+    
+                        <div class="button-result">
+                            <span id="prediksi" class="active">Hasil Prediksi</span>
+                            <span id="garis">Garis Pantai</span>
+                        </div>
+                    </div>
+                    <div class="imgResult">
+                        <span class="curResult">gambar</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -120,26 +113,79 @@ document.querySelectorAll(".select-menu").forEach(menu => {
 });
 
 // === Satelit Button ===
-function setDefaultSentinel() {
-    document.getElementById("sentinel").classList.add("active");
-    document.getElementById("landsat").classList.remove("active");
-    document.querySelector(".curImage").innerText = "sentinel";
-}
-
 const sentinelBtn = document.getElementById("sentinel");
 const landsatBtn = document.getElementById("landsat");
 const curImage = document.querySelector(".curImage");
+const dateInputs = document.querySelectorAll(".select-date");
+
+function setDefaultSentinel() {
+    document.getElementById("sentinel").classList.add("active");
+    document.getElementById("landsat").classList.remove("active");
+    document.querySelector(".curImage").innerText = "Hasil Prediksi Sentinel-2";
+    updateDateRange();
+}
+
+function updateDateRange() {
+    const isSentinel = sentinelBtn.classList.contains("active");
+
+    let minDate, maxDate;
+    if (isSentinel) {
+        // Sentinel-2 (2019–2024)
+        minDate = "2019-01-01";
+        maxDate = "2024-12-31";
+    } else {
+        // Landsat-8 (2013–2018)
+        minDate = "2013-01-01";
+        maxDate = "2018-12-31";
+    }
+    dateInputs.forEach(input => {
+        input.min = minDate;
+        input.max = maxDate;
+        // Jika tanggal sebelumnya berada di luar rentang -> hapus
+        if (input.value) {
+            if (input.value < minDate || input.value > maxDate) {
+                input.value = "";
+            }
+        }
+    });
+}
 
 setDefaultSentinel();
 sentinelBtn.addEventListener("click", () => {
     sentinelBtn.classList.add("active");
     landsatBtn.classList.remove("active");
-    curImage.innerText = "sentinel";
+    curImage.innerText = "Hasil Prediksi Sentinel-2";
+    updateDateRange();
 });
 
 landsatBtn.addEventListener("click", () => {
     landsatBtn.classList.add("active");
     sentinelBtn.classList.remove("active");
-    curImage.innerText = "landsat";
+    curImage.innerText = "Hasil Prediksi Landsat-8";
+    updateDateRange();
+});
+
+// === Satelit Button ===
+const prediksiBtn = document.getElementById("prediksi");
+const garisBtn = document.getElementById("garis");
+const curResult = document.querySelector(".curResult");
+
+function setDefaultPrediksi() {
+    document.getElementById("prediksi").classList.add("active");
+    document.getElementById("garis").classList.remove("active");
+    document.querySelector(".curResult").innerText = "Hasil Prediksi";
+}
+
+setDefaultPrediksi();
+prediksiBtn.addEventListener("click", () => {
+    prediksiBtn.classList.add("active");
+    garisBtn.classList.remove("active");
+    curResult.innerText = "Hasil Prediksi";
+});
+
+garisBtn.addEventListener("click", () => {
+    garisBtn.classList.add("active");
+    prediksiBtn.classList.remove("active");
+    curResult.innerText = "Garis Pantai";
 });
 </script>
