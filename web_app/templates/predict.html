@@ -61,7 +61,7 @@
                     </form>
                 </div>
 
-                <div class="images-container">
+                <div class="images-container hidden">
                     <div class="titleResult">
                         <span class="curImage"></span>
                         <span class="range-date">Rentang Tanggal</span>
@@ -112,16 +112,11 @@ document.querySelectorAll(".select-menu").forEach(menu => {
     });
 });
 
-// === Satelit Button ===
-const sentinelBtn = document.getElementById("sentinel");
-const landsatBtn = document.getElementById("landsat");
-const curImage = document.querySelector(".curImage");
-const dateInputs = document.querySelectorAll(".select-date");
-
 function setDefaultSentinel() {
     document.getElementById("sentinel").classList.add("active");
     document.getElementById("landsat").classList.remove("active");
     document.querySelector(".curImage").innerText = "Hasil Prediksi Sentinel-2";
+    document.querySelector(".images-container").classList.add("hidden");
     updateDateRange();
 }
 
@@ -150,11 +145,18 @@ function updateDateRange() {
     });
 }
 
+// === Satelit Button ===
+const sentinelBtn = document.getElementById("sentinel");
+const landsatBtn = document.getElementById("landsat");
+const curImage = document.querySelector(".curImage");
+const dateInputs = document.querySelectorAll(".select-date");
+
 setDefaultSentinel();
 sentinelBtn.addEventListener("click", () => {
     sentinelBtn.classList.add("active");
     landsatBtn.classList.remove("active");
     curImage.innerText = "Hasil Prediksi Sentinel-2";
+    document.querySelector(".images-container").classList.add("hidden");
     updateDateRange();
 });
 
@@ -162,10 +164,11 @@ landsatBtn.addEventListener("click", () => {
     landsatBtn.classList.add("active");
     sentinelBtn.classList.remove("active");
     curImage.innerText = "Hasil Prediksi Landsat-8";
+    document.querySelector(".images-container").classList.add("hidden");
     updateDateRange();
 });
 
-// === Satelit Button ===
+// === Result Button ===
 const prediksiBtn = document.getElementById("prediksi");
 const garisBtn = document.getElementById("garis");
 const curResult = document.querySelector(".curResult");
@@ -187,5 +190,16 @@ garisBtn.addEventListener("click", () => {
     garisBtn.classList.add("active");
     prediksiBtn.classList.remove("active");
     curResult.innerText = "Garis Pantai";
+});
+
+// === Submit behavior ===
+document.querySelector(".submit").addEventListener("click", function (e) {
+    e.preventDefault();
+
+    // === Tampilkan bagian yang tersembunyi ===
+    document.querySelector(".images-container").classList.remove("hidden");
+    
+    // === Set Default State (Mean) ===
+    setDefaultPrediksi();
 });
 </script>
