@@ -138,36 +138,61 @@
         });
     });
 
+    /*update url*/
+    function updateURL(year, status) {
+        window.location.href = `/detail/${year}/${status}`;
+    }
+
     const optionMenu = document.querySelector(".select-menu"),
         selectBtn = optionMenu.querySelector(".select-btn"),
         options = optionMenu.querySelectorAll(".option"),
         sBtn_text = optionMenu.querySelector(".sBtn-text"),
         detail = document.querySelector(".detail-desc"),
-        desc = document.getElementById("desc-kosong");
-    let selectedYear = null;
+        desc = document.getElementById("desc-kosong"),
+        btnPrediksi = document.getElementById("prediksi"),
+        btnGaris = document.getElementById("garis");
+    var selectedYear = null;
+    var status = "prediksi";
+
     detail.style.display = "none";
 
+    /* --- Parse URL on page load --- */
+    const pathParts = window.location.pathname.split("/");
+    let currentYear = pathParts[2] || null;
+    let currentStatus = pathParts[3] || "prediksi";
+
+    selectedYear = currentYear;
+    status = currentStatus;
+
+    if (selectedYear) {
+        detail.style.display = "block";
+        desc.style.display = "none";
+        sBtn_text.innerText = selectedYear;
+    }
+
+    if (currentStatus === "prediksi") {
+        setActive(btnPrediksi);
+    } else {
+        setActive(btnGaris);
+    }
+
+
+    /* Dropdown */
     selectBtn.addEventListener("click", () => {
         optionMenu.classList.toggle("active");
-
     });
-
 
     options.forEach(option => {
         option.addEventListener("click", () => {
             const optionText = option.querySelector(".option-text");
             selectedYear = optionText.getAttribute("data-value");
-            sBtn_text.innerText = selectedYear;
-            optionMenu.classList.remove("active");
-            detail.style.display = "block";
-            desc.style.display = "none";
-            console.log(selectedYear);
+            updateURL(selectedYear, status);
+            console.log(status);
         });
     });
 
+    /* Buttons Prediksi & Garis */
 
-    const btnPrediksi = document.getElementById("prediksi");
-    const btnGaris = document.getElementById("garis");
 
     function setActive(button) {
         btnPrediksi.classList.remove("active");
@@ -175,8 +200,19 @@
         button.classList.add("active");
     }
 
-    btnPrediksi.addEventListener("click", () => setActive(btnPrediksi));
-    btnGaris.addEventListener("click", () => setActive(btnGaris));
+    btnPrediksi.addEventListener("click", () => {
+        if (!selectedYear) return;
+        setActive(btnPrediksi);
+        status = "prediksi";
+        updateURL(selectedYear, status);
+    });
 
-    btnPrediksi.click();
+    btnGaris.addEventListener("click", () => {
+        if (!selectedYear) return;
+        setActive(btnGaris);
+        status = "garis";
+        updateURL(selectedYear, status);
+    });
+
+
 </script>

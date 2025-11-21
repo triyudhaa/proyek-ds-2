@@ -17,6 +17,8 @@ BASE_MODULES = os.path.dirname(__file__)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def init_result():
+    BASE_DIR = os.path.dirname(__file__)  # === /proyek-ds-2/modules
+    print("Base_dir didalam "+ BASE_DIR)
     coastlines_all = []
     # ==== Path dasar & parameter ====
     years = range(2013, 2019)
