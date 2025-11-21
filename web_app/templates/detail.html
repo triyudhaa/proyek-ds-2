@@ -147,7 +147,12 @@
     let selectedYear = null;
     detail.style.display = "none";
 
-    selectBtn.addEventListener("click", () => optionMenu.classList.toggle("active"));
+    selectBtn.addEventListener("click", () => {
+        optionMenu.classList.toggle("active");
+
+    });
+
+
     options.forEach(option => {
         option.addEventListener("click", () => {
             const optionText = option.querySelector(".option-text");
@@ -159,6 +164,7 @@
             console.log(selectedYear);
         });
     });
+
 
     const btnPrediksi = document.getElementById("prediksi");
     const btnGaris = document.getElementById("garis");

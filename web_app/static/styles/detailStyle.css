@@ -11,8 +11,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    width: 100%;
-    max-width: 1280px;
+    /* width: 100%; */
 }
 
 .header {
@@ -61,6 +60,7 @@ body {
 
 .select-menu {
     width: 200px;
+    position: relative;
 }
 
 .select-menu .select-btn {
@@ -85,18 +85,32 @@ body {
 }
 
 .select-menu .options {
-    position: relative;
+    position: absolute;
+    top: 100%;
+    left: 0;
+
     padding: 20px;
     margin-top: 10px;
     border-radius: 8px;
     background: #fff;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
     display: none;
+
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .25s ease;
+    z-index: 999;
+    /* supaya menimpa elemen lain */
 }
 
 .select-menu.active .options {
     display: block;
+    max-height: 200px;
+    /* atau sesuai jumlah item */
+    overflow-y: auto;
+    /* width: 200px; */
 }
+
 
 .options .option {
     display: flex;
