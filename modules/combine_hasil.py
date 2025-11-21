@@ -17,8 +17,6 @@ BASE_MODULES = os.path.dirname(__file__)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def init_result():
-    BASE_DIR = os.path.dirname(__file__)  # === /proyek-ds-2/modules
-    print("Base_dir didalam "+ BASE_DIR)
     coastlines_all = []
     # ==== Path dasar & parameter ====
     years = range(2013, 2019)
@@ -86,20 +84,15 @@ def init_result():
 
 def generate_coastline_all():
     coastlines_all = init_result()
-    
-    # --- Setup warna ---
     years = sorted(set([c["year"] for c in coastlines_all]))
-    # print(years)
-    periods = ["Jan_Jun", "Jul_Des", "q1", "q2", "q3", "q4"]
-    colors = cm.tab20(np.linspace(0, 1, len(years) * len(periods)))  # palet warna
+
+    # Colormap 1 warna
+    cmap = cm.Blues  
+    # Normalisasi tahun → range 0–1 untuk colormap
+    norm = plt.Normalize(min(years), max(years))
+    # Map tahun -> warna gradasi
+    color_map = {y: cmap(norm(y)) for y in years}
     
-    # Mapping kombinasi (year, period) ke warna unik
-    color_map = {}
-    i = 0
-    for y in years:
-        for p in periods:
-            color_map[(y, p)] = colors[i]
-            i += 1
     # --- Plot gabungan ---
     plt.figure(figsize=(12, 10))
     
@@ -109,12 +102,12 @@ def generate_coastline_all():
         coastline = item["coastline"]
 
         for contour in coastline:
-            xs = [pt[0] for pt in contour]  # x (longitude)
-            ys = [pt[1] for pt in contour]  # y (latitude)
-            plt.plot(xs, ys, color=color_map[(year, period)], linewidth=1,
-                    label=f"{period} {year}")
+            xs = [pt[0] for pt in contour]  # longitude
+            ys = [pt[1] for pt in contour]  # latitude
+            plt.plot(xs, ys, color=color_map[year], linewidth=1,
+                     label=f"{period} {year}")
 
-    # Hilangkan duplikat di legend
+    # Hilangkan duplikat legend
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = dict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05, 1), loc="upper left")
@@ -123,52 +116,81 @@ def generate_coastline_all():
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
     plt.axis("equal")
-    plt.savefig(os.path.join(OUTPUT_DIR, "coastline_combined_all.png"),dpi=300, bbox_inches='tight')
-    # plt.show()
-    
+    plt.savefig(os.path.join(OUTPUT_DIR, "coastline_combined_all.png"),
+                dpi=300, bbox_inches='tight')
+
     return coastlines_all
 
-def generate_coastline_compare(curYear):
+def generate_coastline_compare(startYear, endYear):
     coastlines_all = generate_coastline_all()
-    years = [curYear, curYear+1]
+    years = list(range(startYear, endYear + 1))
     periods = ["Jan_Jun", "Jul_Des", "q1", "q2", "q3", "q4"]
-    colors = cm.tab20(np.linspace(0, 1, len(years) * len(periods)))  # palet warna
-    
-    # Mapping kombinasi (year, period) ke warna unik
+
+    # Base colormap 
+    base_cmaps = [
+        cm.Blues,
+        cm.Reds,
+        cm.Greens,
+        cm.Purples,
+        cm.Oranges,
+        cm.Greys,
+        cm.pink,
+        cm.BuPu,
+        cm.GnBu,
+        cm.YlOrBr,
+        cm.YlGn,
+        cm.RdPu
+    ]
+
+    # Map tahun → colormap
+    year_cmap_map = {}
+    for i, y in enumerate(years):
+        year_cmap_map[y] = base_cmaps[i]
+    # Mapping warna final
     color_map = {}
-    i = 0
+    grad_positions = [0.55, 0.9, 0.3, 0.55, 0.75, 0.9]
+
     for y in years:
-        for p in periods:
-            color_map[(y, p)] = colors[i]
-            i += 1
+        cmap = year_cmap_map[y]
+        for idx, p in enumerate(periods):
+            color_map[(y, p)] = cmap(grad_positions[idx])
+
     # --- Plot gabungan ---
     plt.figure(figsize=(12, 10))
-    
+
     for item in coastlines_all:
         year = item["year"]
         period = item["period"]
-        coastline = item["coastline"]
-        
-        if (year in years):
-            for contour in coastline:
-                xs = [pt[0] for pt in contour]  # x (longitude)
-                ys = [pt[1] for pt in contour]  # y (latitude)
-                plt.plot(xs, ys, color=color_map[(year, period)], linewidth=1,
-                        label=f"{period} {year}")
 
-    # Hilangkan duplikat di legend
+        if year not in years:
+            continue
+        coastline = item["coastline"]
+        for contour in coastline:
+            xs = [pt[0] for pt in contour]
+            ys = [pt[1] for pt in contour]
+
+            plt.plot(
+                xs, ys,
+                color=color_map[(year, period)],
+                linewidth=1,
+                label=f"{period} {year}"
+            )
+
+    # — Legend —
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = dict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05, 1), loc="upper left")
 
-    plt.title("Gabungan Coastline")
+    plt.title(f"Coastline Comparison {startYear}–{endYear}")
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
     plt.axis("equal")
-    # plt.savefig(f"web_app/coastlines/coastline_combined_{curYear}-{curYear+1}.png", dpi=300, bbox_inches='tight')
-    out_path = os.path.join(OUTPUT_DIR, f"coastline_combined_{curYear}-{curYear+1}.png")
+
+    out_path = os.path.join(OUTPUT_DIR, f"coastline_compare_{startYear}-{endYear}.png")
     plt.savefig(out_path, dpi=300, bbox_inches='tight')
     plt.show()
+
+    return out_path
 
 def interpolate_line(line, num_points):
     """Interpolasi garis pantai agar punya jumlah titik seragam."""

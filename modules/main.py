@@ -7,10 +7,10 @@ import combine_hasil
 
 # General Coastline Landsat 
 # combine_hasil.generate_coastline_all()
-combine_hasil.avg_coastline(2)
+# combine_hasil.avg_coastline(2)
 # combine_hasil.avg_coastline(4)
 # combine_hasil.avg_coastline(6)
-# combine_hasil.generate_coastline_compare(2013)
+combine_hasil.generate_coastline_compare(2019, 2023)
 # combine_hasil.generate_coastline_compare(2023)
 # combine_hasil.generate_coastline_compare_avg(2013)
 # combine_hasil.generate_coastline_compare_avg(2023)
