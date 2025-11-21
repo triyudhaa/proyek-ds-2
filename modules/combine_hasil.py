@@ -11,7 +11,7 @@ import coastline
 # --- Tentukan path folder utama proyek ---
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # naik 1 level dari modules/
 OUTPUT_DIR = os.path.join(BASE_DIR, "web_app", "static", "assets", "coastlines")
-print("Base_dir diluar "+ BASE_DIR)
+BASE_MODULES = os.path.dirname(__file__)
 
 # --- pastikan folder output ada ---
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -26,10 +26,9 @@ def init_result():
                 
     # ==== LOOP untuk baca & koreksi semua file ====
     for year in years:
-        for period in periods:  
-
-            filepath = os.path.join(BASE_DIR, "LANDSAT8", f"Landsat8_Predict_{year}_{period}.tif")
-
+        for period in periods:
+            # filepath = f"modules/LANDSAT8/Landsat8_Predict_{year}_{period}.tif"
+            filepath = os.path.join(BASE_MODULES, 'LANDSAT8', f"Landsat8_Predict_{year}_{period}.tif")
             try:
                 # --- ekstraksi ---
                 ocean_mask, contours_pixel, contours_geo, meta, array = coastline.extract_coastline_from_geotiff(
@@ -59,9 +58,8 @@ def init_result():
                 
     for year in years:
         for period in periods:
-            # filepath = f"SENTINEL2/prediction_final_{year}_{period}.tif"
-            filepath = os.path.join(BASE_DIR, "SENTINEL2", f"prediction_final_{year}_{period}.tif")
-
+            #filepath = f"modules/SENTINEL2/prediction_final_{year}_{period}.tif"
+            filepath = os.path.join(BASE_MODULES, 'SENTINEL2', f"prediction_final_{year}_{period}.tif")
             try:
                 # --- ekstraksi ---
                 ocean_mask, contours_pixel, contours_geo, meta, array = coastline.extract_coastline_from_geotiff(
