@@ -11,7 +11,11 @@ def dashboard():
 
 @app.route("/detail")
 def detail():
-    return render_template('detail.html')
+    return render_template("detail.html", curYear=None, curStat=None)
+
+@app.route("/detail/<year>/<status>")
+def detail_with_params(year, status):
+    return render_template("detail.html", curYear=year, curStat=status)
 
 @app.route("/predict")
 def predict():

@@ -11,11 +11,14 @@ import coastline
 # --- Tentukan path folder utama proyek ---
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # naik 1 level dari modules/
 OUTPUT_DIR = os.path.join(BASE_DIR, "web_app", "static", "assets", "coastlines")
+print("Base_dir diluar "+ BASE_DIR)
 
 # --- pastikan folder output ada ---
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def init_result():
+    BASE_DIR = os.path.dirname(__file__)  # === /proyek-ds-2/modules
+    print("Base_dir didalam "+ BASE_DIR)
     coastlines_all = []
     # ==== Path dasar & parameter ====
     years = range(2013, 2019)
@@ -23,8 +26,9 @@ def init_result():
                 
     # ==== LOOP untuk baca & koreksi semua file ====
     for year in years:
-        for period in periods:
-            filepath = f"LANDSAT8/Landsat8_Predict_{year}_{period}.tif"
+        for period in periods:  
+
+            filepath = os.path.join(BASE_DIR, "LANDSAT8", f"Landsat8_Predict_{year}_{period}.tif")
 
             try:
                 # --- ekstraksi ---
@@ -55,7 +59,8 @@ def init_result():
                 
     for year in years:
         for period in periods:
-            filepath = f"SENTINEL2/prediction_final_{year}_{period}.tif"
+            # filepath = f"SENTINEL2/prediction_final_{year}_{period}.tif"
+            filepath = os.path.join(BASE_DIR, "SENTINEL2", f"prediction_final_{year}_{period}.tif")
 
             try:
                 # --- ekstraksi ---
