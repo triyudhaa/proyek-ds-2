@@ -150,9 +150,11 @@
         detail = document.querySelector(".detail-desc"),
         desc = document.getElementById("desc-kosong"),
         btnPrediksi = document.getElementById("prediksi"),
-        btnGaris = document.getElementById("garis");
+        btnGaris = document.getElementById("garis"),
+        imgCon = document.querySelector(".images-container");
     var selectedYear = null;
     var status = "prediksi";
+    const baseImgPath = "{{ url_for('static', filename='assets/predictions/') }}";
 
     detail.style.display = "none";
 
@@ -168,6 +170,11 @@
         detail.style.display = "block";
         desc.style.display = "none";
         sBtn_text.innerText = selectedYear;
+
+        const imgSrc = `${baseImgPath}prediction_all_${selectedYear}.png`;
+        imgContainer.innerHTML = `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
+
+
     }
 
     if (currentStatus === "prediksi") {
@@ -192,7 +199,6 @@
     });
 
     /* Buttons Prediksi & Garis */
-
 
     function setActive(button) {
         btnPrediksi.classList.remove("active");
