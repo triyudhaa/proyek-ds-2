@@ -19,7 +19,7 @@ def detail_with_params(year, status):
 
 @app.route("/predict/<satelit>")
 def predict(satelit):
-    return render_template('predict.html')
+    return render_template('predict.html', satelit=satelit)
 
 @app.route("/comparison")
 def comparison():

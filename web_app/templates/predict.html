@@ -40,8 +40,8 @@
             <div class="main-content">
                 <div class="side-container">
                     <div class="button-satelit">
-                        <span id="sentinel" class="active">Sentinel-2</span>
-                        <span id="landsat">Landsat-8</span>
+                        <span id="sentinel" class="{% if satelit == 'sentinel' %}active{% endif %}">Sentinel-2</span>
+                        <span id="landsat" class="{% if satelit == 'landsat' %}active{% endif %}">Landsat-8</span>
                     </div>
 
                     <form class="input">
@@ -91,6 +91,11 @@ document.querySelectorAll('.sidebar-group').forEach(item => {
         window.location.href = url;
     });
 });
+
+/*update url*/
+function updateURL(satelit) {
+    window.location.href = `/predict/${satelit}`;
+}
     
 // === Dropdown Universal ===
 document.querySelectorAll(".select-menu").forEach(menu => {
@@ -151,12 +156,13 @@ const landsatBtn = document.getElementById("landsat");
 const curImage = document.querySelector(".curImage");
 const dateInputs = document.querySelectorAll(".select-date");
 
-setDefaultSentinel();
+// setDefaultSentinel();
 sentinelBtn.addEventListener("click", () => {
     sentinelBtn.classList.add("active");
     landsatBtn.classList.remove("active");
     curImage.innerText = "Hasil Prediksi Sentinel-2";
     document.querySelector(".images-container").classList.add("hidden");
+    updateURL('sentinel');
     updateDateRange();
 });
 
@@ -165,6 +171,7 @@ landsatBtn.addEventListener("click", () => {
     sentinelBtn.classList.remove("active");
     curImage.innerText = "Hasil Prediksi Landsat-8";
     document.querySelector(".images-container").classList.add("hidden");
+    updateURL('landsat');
     updateDateRange();
 });
 
