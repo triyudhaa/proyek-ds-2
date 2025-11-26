@@ -19,6 +19,15 @@ BASE_MODULES = os.path.dirname(__file__)
 # --- pastikan folder output ada ---
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+def convert_q_to_text(period):
+        mapping = {
+        "q1": "Jan_Mar",
+        "q2": "Apr_Jun",
+        "q3": "Jul_Sep",
+        "q4": "Okt_Des"
+        }
+        return mapping.get(period, period)
+
 def init_result():
     coastlines_all = []
     # ==== Path dasar & parameter ====
@@ -58,10 +67,10 @@ def init_result():
                 # print(f"Gagal baca {filepath}: {e}")
         listPlot.append(numPlot)
         # print(listPlot)     
+
     # ==== Path dasar & parameter ====
     years = range(2019, 2025)
-    periods = ["q1", "q2", "q3", "q4"]
-                
+    periods = ["q1", "q2", "q3", "q4"]    
     for year in years:
         numPlot = 0
         for period in periods:
@@ -78,9 +87,11 @@ def init_result():
                     ws = 7
                 )
                 transform = meta["transform"]
+                new_period = convert_q_to_text(period)
+
                 coastlines_all.append({
                     "year": year,
-                    "period": period,
+                    "period": new_period,
                     "mask": array,
                     "transform": transform,
                     "coastline": contours_geo,
@@ -93,6 +104,7 @@ def init_result():
                 # print(f"Gagal baca {filepath}: {e}")
         listPlot.append(numPlot)
         # print(listPlot) 
+
     return coastlines_all, listPlot
 
 def generate_coastline_all():
@@ -107,6 +119,9 @@ def generate_coastline_all():
     norm = plt.Normalize(min(years), max(years))
     # Map tahun -> warna gradasi
     color_map = {y: cmap(norm(y)) for y in years}
+    # print(years)
+    periods = ["Jan_Jun", "Jul_Des", "Jan_Mar", "Apr_Jun", "Jul_Sep", "Okt_Des"]
+    colors = cm.tab20(np.linspace(0, 1, len(years) * len(periods)))  # palet warna
     
     # --- Plot gabungan ---
     plt.figure(figsize=(12, 10))
@@ -138,30 +153,11 @@ def generate_coastline_all():
 
 def generate_coastline_compare(startYear, endYear):
     coastlines_all = generate_coastline_all()
-    years = list(range(startYear, endYear + 1))
-    periods = ["Jan_Jun", "Jul_Des", "q1", "q2", "q3", "q4"]
-
-    # Base colormap 
-    base_cmaps = [
-        cm.Blues,
-        cm.Reds,
-        cm.Greens,
-        cm.Purples,
-        cm.Oranges,
-        cm.Greys,
-        cm.pink,
-        cm.BuPu,
-        cm.GnBu,
-        cm.YlOrBr,
-        cm.YlGn,
-        cm.RdPu
-    ]
-
-    # Map tahun → colormap
-    year_cmap_map = {}
-    for i, y in enumerate(years):
-        year_cmap_map[y] = base_cmaps[i]
-    # Mapping warna final
+    years = [startYear, endYear+1]
+    periods = ["Jan_Jun", "Jul_Des", "Jan_Mar", "Apr_Jun", "Jul_Sep", "Okt_Des"]
+    colors = cm.tab20(np.linspace(0, 1, len(years) * len(periods)))  # palet warna
+    
+    # Mapping kombinasi (year, period) ke warna unik
     color_map = {}
     grad_positions = [0.55, 0.9, 0.3, 0.55, 0.75, 0.9]
 
@@ -330,7 +326,7 @@ def generate_prediction_all_by_year(year):
     axes = np.array(axes).flatten()
 
     # sort periods agar berurutan
-    period_order = ["Jan_Jun", "Jul_Des", "q1", "q2", "q3", "q4"]
+    period_order = ["Jan_Jun", "Jul_Des", "Jan_Mar", "Apr_Jun", "Jul_Sep", "Okt_Des"]
     data_year = sorted(data_year, key=lambda x: period_order.index(x["period"]))
 
     for i in range(n_fig):
