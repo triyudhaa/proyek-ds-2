@@ -116,7 +116,6 @@ def generate_coastline_all():
     # Buat gradasi warna untuk seluruh tahun dalam range 0.3–1.0
     cmap = cm.Blues
     colors = cmap(np.linspace(0.3, 1.0, len(years)))
-
     # Mapping: tahun -> warna
     color_map = {year: colors[i] for i, year in enumerate(years)}
     
@@ -150,18 +149,23 @@ def generate_coastline_all():
 
 def generate_coastline_compare(startYear, endYear):
     coastlines_all = generate_coastline_all()
-    years = [startYear, endYear+1]
-    periods = ["Jan_Jun", "Jul_Des", "Jan_Mar", "Apr_Jun", "Jul_Sep", "Okt_Des"]
-    colors = cm.tab20(np.linspace(0, 1, len(years) * len(periods)))  # palet warna
-    
-    # Mapping kombinasi (year, period) ke warna unik
-    color_map = {}
-    grad_positions = [0.55, 0.9, 0.3, 0.55, 0.75, 0.9]
 
+    # Tahun yang dipakai
+    years = [startYear, endYear + 1]
+    periods = ["Jan_Jun", "Jul_Des", "Jan_Mar", "Apr_Jun", "Jul_Sep", "Okt_Des"]
+
+    # Total kombinasi
+    total_items = len(years) * len(periods)
+    cmap = cm.Blues  # pilih palette
+    grad_colors = cmap(np.linspace(0.3, 1.0, total_items))  # 30%–100% supaya kontras
+
+    # === Mapping kombinasi (year, period) -> warna ===
+    color_map = {}
+    idx = 0
     for y in years:
-        cmap = year_cmap_map[y]
-        for idx, p in enumerate(periods):
-            color_map[(y, p)] = cmap(grad_positions[idx])
+        for p in periods:
+            color_map[(y, p)] = grad_colors[idx]
+            idx += 1
 
     # --- Plot gabungan ---
     plt.figure(figsize=(12, 10))
@@ -196,7 +200,7 @@ def generate_coastline_compare(startYear, endYear):
 
     out_path = os.path.join(OUTPUT_DIR, f"coastline_compare_{startYear}-{endYear}.png")
     plt.savefig(out_path, dpi=300, bbox_inches='tight')
-    plt.show()
+    # plt.show()
 
     return out_path
 
@@ -246,7 +250,10 @@ def avg_coastline(x, num_points=1000):
     
     # === Visualisasi ===
     plt.figure(figsize=(10, 8))
-    colors = plt.cm.viridis(np.linspace(0, 1, len(avg_coastlines)))
+    
+    # Buat gradasi warna untuk seluruh tahun dalam range 0.3–1.0
+    cmap = cm.Blues
+    colors = cmap(np.linspace(0.3, 1.0, len(avg_coastlines)))
 
     for i, data in enumerate(avg_coastlines):
         xs, ys = data["mean_coastline"][:, 0], data["mean_coastline"][:, 1]
@@ -259,8 +266,9 @@ def avg_coastline(x, num_points=1000):
     plt.axis("equal")
     # plt.savefig(os.path.join(OUTPUT_DIR, f"coastline_combined_{x}.png"), dpi=300, bbox_inches='tight')
     plt.savefig(os.path.join(OUTPUT_DIR, f"coastline_combined_{x}.png"),dpi=300, bbox_inches='tight')
-    plt.show()
+    # plt.show()
 
+## Harusnya ini udh gadipake lagi (pake dari axel)
 def generate_coastline_compare_avg(curYear, num_points=1000):
     coastlines_all = generate_coastline_all()
     year_groups = {
@@ -300,7 +308,7 @@ def generate_coastline_compare_avg(curYear, num_points=1000):
     # plt.savefig(f"coastlines/coastline_avg_{curYear}-{curYear+1}.png", dpi=300, bbox_inches='tight')
     out_path = os.path.join(OUTPUT_DIR, f"coastline_avg_{curYear}-{curYear+1}.png")
     plt.savefig(out_path, dpi=300, bbox_inches='tight')
-    plt.show()
+    # plt.show()
 
 def fig_to_array(fig):
     buf = io.BytesIO()
