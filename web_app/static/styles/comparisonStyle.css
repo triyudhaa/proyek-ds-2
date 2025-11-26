@@ -60,6 +60,7 @@ body {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    font-weight: 600;
 }
 
 .side-container {
@@ -77,13 +78,13 @@ body {
     display: flex;
     background: #fff;
     padding: 10px;
-    font-weight: 350;
+    font-weight: 400;
     border-radius: 8px;
     align-items: center;
     cursor: pointer;
     justify-content: space-between;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    color: #000000;
+    color: #103A5E;
 }
 
 .select-btn i{
@@ -183,7 +184,7 @@ body {
 
 #title {
     color: #103A5E;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .perubahan-group {
