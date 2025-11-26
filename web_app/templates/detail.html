@@ -177,6 +177,11 @@
             imgCon.innerHTML = `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
         }
 
+        if (status == "garis") {
+            const imgSrc = `${baseImgPath}prediction_all_${selectedYear}.png`;
+            imgCon.innerHTML = `<span id=image-title></span> `;
+            imgCon.innerHTML = `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
+        }
 
 
 
