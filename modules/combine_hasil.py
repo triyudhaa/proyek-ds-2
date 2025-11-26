@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import random
 import os
+import io
+from PIL import Image
 random.seed(42)
 np.random.seed(42)
 
@@ -11,6 +13,7 @@ import coastline
 # --- Tentukan path folder utama proyek ---
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # naik 1 level dari modules/
 OUTPUT_DIR = os.path.join(BASE_DIR, "web_app", "static", "assets", "coastlines")
+OUTPUT_DIR_2 = os.path.join(BASE_DIR, "web_app", "static", "assets", "predictions")
 BASE_MODULES = os.path.dirname(__file__)
 
 # --- pastikan folder output ada ---
@@ -21,15 +24,17 @@ def init_result():
     # ==== Path dasar & parameter ====
     years = range(2013, 2019)
     periods = ["Jan_Jun", "Jul_Des"]
+    listPlot = []
                 
     # ==== LOOP untuk baca & koreksi semua file ====
     for year in years:
+        numPlot = 0
         for period in periods:
             # filepath = f"modules/LANDSAT8/Landsat8_Predict_{year}_{period}.tif"
             filepath = os.path.join(BASE_MODULES, 'LANDSAT8', f"Landsat8_Predict_{year}_{period}.tif")
             try:
                 # --- ekstraksi ---
-                ocean_mask, contours_pixel, contours_geo, meta, array = coastline.extract_coastline_from_geotiff(
+                ocean_mask, contours_pixel, contours_geo, meta, array, fig = coastline.extract_coastline_from_geotiff(
                     filepath,
                     year,
                     period,
@@ -43,24 +48,28 @@ def init_result():
                     "period": period,
                     "mask": array,
                     "transform": transform,
-                    "coastline": contours_geo
+                    "coastline": contours_geo,
+                    "plot": fig
                 })
-
+                numPlot+=1
+                plt.close(fig)
             except Exception as e:
                 continue
                 # print(f"Gagal baca {filepath}: {e}")
-                
+        listPlot.append(numPlot)
+        # print(listPlot)     
     # ==== Path dasar & parameter ====
     years = range(2019, 2025)
     periods = ["q1", "q2", "q3", "q4"]
                 
     for year in years:
+        numPlot = 0
         for period in periods:
             #filepath = f"modules/SENTINEL2/prediction_final_{year}_{period}.tif"
             filepath = os.path.join(BASE_MODULES, 'SENTINEL2', f"prediction_final_{year}_{period}.tif")
             try:
                 # --- ekstraksi ---
-                ocean_mask, contours_pixel, contours_geo, meta, array = coastline.extract_coastline_from_geotiff(
+                ocean_mask, contours_pixel, contours_geo, meta, array, fig = coastline.extract_coastline_from_geotiff(
                     filepath,
                     year,
                     period,
@@ -74,16 +83,22 @@ def init_result():
                     "period": period,
                     "mask": array,
                     "transform": transform,
-                    "coastline": contours_geo
+                    "coastline": contours_geo,
+                    "plot": fig
                 })
-
+                plt.close(fig)
+                numPlot+=1
             except Exception as e:
                 continue
                 # print(f"Gagal baca {filepath}: {e}")
-    return coastlines_all
+        listPlot.append(numPlot)
+        # print(listPlot) 
+    return coastlines_all, listPlot
 
 def generate_coastline_all():
-    coastlines_all = init_result()
+    coastlines_all, listPlot = init_result()
+    
+    # --- Setup warna ---
     years = sorted(set([c["year"] for c in coastlines_all]))
 
     # Colormap 1 warna
@@ -293,3 +308,50 @@ def generate_coastline_compare_avg(curYear, num_points=1000):
     out_path = os.path.join(OUTPUT_DIR, f"coastline_avg_{curYear}-{curYear+1}.png")
     plt.savefig(out_path, dpi=300, bbox_inches='tight')
     plt.show()
+
+def fig_to_array(fig):
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight")
+    buf.seek(0)
+    img = Image.open(buf)
+    return np.array(img)
+
+def generate_prediction_all_by_year(year):
+    coastlines_all, listPlot = init_result()
+    # filter tahun
+    data_year = [c for c in coastlines_all if c["year"] == year]
+    n_fig = listPlot[year-2013]
+
+    # layout subplot: max 4 (2x2)
+    rows = 2 if n_fig > 2 else 1
+    cols = 2 if n_fig > 1 else 1
+
+    fig, axes = plt.subplots(rows, cols, figsize=(6*cols, 6*rows))
+    axes = np.array(axes).flatten()
+
+    # sort periods agar berurutan
+    period_order = ["Jan_Jun", "Jul_Des", "q1", "q2", "q3", "q4"]
+    data_year = sorted(data_year, key=lambda x: period_order.index(x["period"]))
+
+    for i in range(n_fig):
+        fig_old = data_year[i]["plot"]
+        period = data_year[i]["period"]
+
+        img = fig_to_array(fig_old)  # convert fig to array
+
+        axes[i].imshow(img)
+        axes[i].axis("off")
+        axes[i].set_title(period)
+
+    # kosongkan subplot yang tidak terpakai
+    for j in range(n_fig, len(axes)):
+        axes[j].axis("off")
+
+    # judul besar
+    # plt.suptitle(f"prediction_all - {year}", fontsize=18)
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
+
+    # simpan file
+    out_file = os.path.join(OUTPUT_DIR_2, f"prediction_all_{year}.png")
+    plt.savefig(out_file, dpi=300, bbox_inches="tight")
+    plt.close(fig)

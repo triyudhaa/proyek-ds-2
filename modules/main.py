@@ -15,6 +15,8 @@ combine_hasil.generate_coastline_compare(2019, 2023)
 # combine_hasil.generate_coastline_compare_avg(2013)
 # combine_hasil.generate_coastline_compare_avg(2023)
 
+combine_hasil.generate_prediction_all_by_year(2024)
+
 # General Coastline Sentinel-2
 # coastline_sentinel = sentinel_hasil.generate_coastline_sentinel()
 

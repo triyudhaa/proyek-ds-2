@@ -76,12 +76,10 @@ def extract_coastline_from_geotiff(filepath, year, period, water_value=1, land_v
     # Pastikan array binary (0 dan 1)
     water_mask = (array == water_value)
     
-    # plot setelah smoothing 
-    # plt.figure(figsize=(8, 8))
-    # plt.imshow(array, cmap="coolwarm")
-    # plt.axis('off')
-    # plt.title(f"Prediction After Smoothing - {year}_{period}")
-    # plt.show()
+    fig, ax = plt.subplots(figsize=(8, 8))
+    ax.imshow(array, cmap="coolwarm")
+    ax.axis("off")
+    ax.set_title(f"Prediction After Smoothing - {year}_{period}")
 
     # Step 3: Identifikasi laut (air yang terhubung ke tepi)
     labeled_water, num_features = ndimage.label(water_mask)
@@ -117,7 +115,7 @@ def extract_coastline_from_geotiff(filepath, year, period, water_value=1, land_v
             geo_coords.append((lon, lat))
         contours_geo.append(np.array(geo_coords))
 
-    return ocean_mask, contours, contours_geo, meta, array
+    return ocean_mask, contours, contours_geo, meta, array, fig
 
 def extract_coastline_from_geotiff_landsat(filepath, year, period, water_value=1, land_value=0, ws = 7):
     # Step 1: Baca GeoTIFF
