@@ -15,6 +15,7 @@ def detail():
 
 @app.route("/detail/<year>/<status>")
 def detail_with_params(year, status):
+    # print(year, status)
     return render_template("detail.html", curYear=year, curStat=status)
 
 @app.route("/predict")
