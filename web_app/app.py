@@ -17,8 +17,8 @@ def detail():
 def detail_with_params(year, status):
     return render_template("detail.html", curYear=year, curStat=status)
 
-@app.route("/predict")
-def predict():
+@app.route("/predict/<satelit>")
+def predict(satelit):
     return render_template('predict.html')
 
 @app.route("/comparison")
