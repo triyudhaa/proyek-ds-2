@@ -113,15 +113,12 @@ def generate_coastline_all():
     # --- Setup warna ---
     years = sorted(set([c["year"] for c in coastlines_all]))
 
-    # Colormap 1 warna
-    cmap = cm.Blues  
-    # Normalisasi tahun → range 0–1 untuk colormap
-    norm = plt.Normalize(min(years), max(years))
-    # Map tahun -> warna gradasi
-    color_map = {y: cmap(norm(y)) for y in years}
-    # print(years)
-    periods = ["Jan_Jun", "Jul_Des", "Jan_Mar", "Apr_Jun", "Jul_Sep", "Okt_Des"]
-    colors = cm.tab20(np.linspace(0, 1, len(years) * len(periods)))  # palet warna
+    # Buat gradasi warna untuk seluruh tahun dalam range 0.3–1.0
+    cmap = cm.Blues
+    colors = cmap(np.linspace(0.3, 1.0, len(years)))
+
+    # Mapping: tahun -> warna
+    color_map = {year: colors[i] for i, year in enumerate(years)}
     
     # --- Plot gabungan ---
     plt.figure(figsize=(12, 10))
