@@ -44,24 +44,27 @@
                         <span id="landsat" class="{% if satelit == 'landsat' %}active{% endif %}">Landsat-8</span>
                     </div>
 
-                    <form class="input">
+                    <form class="input" method="POST">
                         <label>
                             Tanggal Awal:
-                            <input class="select-date" type="date" name="start-date"/>
+                            <input class="select-date" type="date" name="start_date" value="{{ start_date or '' }}"/>
                         </label>
 
                         <label>
                             Tanggal Akhir:
-                            <input class="select-date" type="date" name="end-date"/>
+                            <input class="select-date" type="date" name="end_date" value="{{ end_date or '' }}"/>
                         </label>
 
                         <button class="submit">
                             Submit
                         </button>
                     </form>
+                    {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endif %}
                 </div>
 
-                <div class="images-container hidden">
+                <div class="images-container {% if show_img_container != 'show' %}hidden{% endif %}">
                     <div class="titleResult">
                         <span class="curImage"></span>
                         <span class="range-date">Rentang Tanggal</span>
@@ -200,13 +203,12 @@ garisBtn.addEventListener("click", () => {
 });
 
 // === Submit behavior ===
-document.querySelector(".submit").addEventListener("click", function (e) {
-    e.preventDefault();
+// document.querySelector(".submit").addEventListener("click", function (e) {
 
-    // === Tampilkan bagian yang tersembunyi ===
-    document.querySelector(".images-container").classList.remove("hidden");
+//     // === Tampilkan bagian yang tersembunyi ===
+//     document.querySelector(".images-container").classList.remove("hidden");
     
-    // === Set Default State (Mean) ===
-    setDefaultPrediksi();
-});
+//     // === Set Default State (Mean) ===
+//     setDefaultPrediksi();
+// });
 </script>
