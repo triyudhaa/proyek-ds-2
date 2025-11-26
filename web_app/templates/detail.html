@@ -171,8 +171,13 @@
         desc.style.display = "none";
         sBtn_text.innerText = selectedYear;
 
-        const imgSrc = `${baseImgPath}prediction_all_${selectedYear}.png`;
-        imgContainer.innerHTML = `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
+        if (status == "prediksi") {
+            const imgSrc = `${baseImgPath}prediction_all_${selectedYear}.png`;
+            imgCon.innerHTML = `<span id=image-title></span> `;
+            imgCon.innerHTML = `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
+        }
+
+
 
 
     }

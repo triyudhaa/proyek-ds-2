@@ -192,3 +192,7 @@ body {
     color: #103A5E;
     font-style: italic;
 }
+
+.images-container img {
+    width: 650px;
+}
