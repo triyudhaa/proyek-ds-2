@@ -51,11 +51,11 @@ def predict(satelit):
                 show_segment = False
             )
         
-        # jalankan model machine learning sesuai tipe satelit yang dipilih
         filepath = f'../web_app/static/assets/custom_model/raw_data.tif'
 
         # catch exception kalau misalnya gaada data di rentang tanggal masukkan
         try:
+            # jalankan model machine learning sesuai tipe satelit yang dipilih
             if satelit == 'sentinel':
                 sentinel_model.init_predict_sentinel(start_date, end_date)
                 coastline.extract_coastline_from_input(filepath, start_date, end_date)
@@ -69,16 +69,11 @@ def predict(satelit):
                 error="Data tidak ada pada tanggal yang ditentukan."
             )
 
-        predictionPath = f'../static/assets/custom_model/prediction.png'
-        coastlinePath = f'../static/assets/custom_model/coastline.png'
-
         return render_template(
             "predict.html",
             satelit=satelit,
             start_date = start_date,
             end_date = end_date,
-            predictionPath = predictionPath,
-            coastlinePath = coastlinePath,
             show_img_container = "show"
         )
     

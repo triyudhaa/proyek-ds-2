@@ -75,7 +75,8 @@
                         </div>
                     </div>
                     <div class="imgResult">
-                        <img class = "predict-img" src="{{ url_for('static', filename='assets/custom_model/prediction.png') }}" alt="Hasil Prediksi">
+                        <img class = "predict-img" id="prediksi_res" src="{{ url_for('static', filename='assets/custom_model/prediction.png') }}" alt="Hasil Prediksi">
+                        <img class = "predict-img hidden" id="garis_pantai_res" src="{{ url_for('static', filename='assets/custom_model/coastline.png') }}" alt="Hasil Garis Pantai">
                         <!-- <span class="curResult">gambar</span> -->
                     </div>
                 </div>
@@ -183,24 +184,29 @@ landsatBtn.addEventListener("click", () => {
 const prediksiBtn = document.getElementById("prediksi");
 const garisBtn = document.getElementById("garis");
 const curResult = document.querySelector(".curResult");
+const imgPrediksi = document.getElementById('prediksi_res');
+const imgGarisPantai = document.getElementById('garis_pantai_res');
 
 function setDefaultPrediksi() {
     document.getElementById("prediksi").classList.add("active");
     document.getElementById("garis").classList.remove("active");
-    document.querySelector(".curResult").innerText = "Hasil Prediksi";
+    imgGarisPantai.classList.add("hidden");
+    imgPrediksi.classList.remove("hidden");
 }
 
 setDefaultPrediksi();
 prediksiBtn.addEventListener("click", () => {
     prediksiBtn.classList.add("active");
     garisBtn.classList.remove("active");
-    // curResult.innerText = "Hasil Prediksi";
+    imgGarisPantai.classList.add("hidden");
+    imgPrediksi.classList.remove("hidden");
 });
 
 garisBtn.addEventListener("click", () => {
     garisBtn.classList.add("active");
     prediksiBtn.classList.remove("active");
-    curResult.innerText = "Garis Pantai";
+    imgGarisPantai.classList.remove("hidden");
+    imgPrediksi.classList.add("hidden");
 });
 
 // === Submit behavior ===
