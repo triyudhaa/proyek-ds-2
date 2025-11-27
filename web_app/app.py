@@ -1,4 +1,10 @@
 from flask import Flask, render_template, request, jsonify
+import sys
+from ee.ee_exception import EEException
+sys.path.append("..")
+from modules import sentinel_model
+from modules import landsat_model
+from modules import coastline
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -29,29 +35,50 @@ def predict(satelit):
 
         # cek tanggalnya diisi atau tidak
         if start_date == "" or end_date == "":
-            error = "Tanggal mulai dan tanggal selesai harus diisi!"
-            print(error)
-
             return render_template(
                 "predict.html",
                 satelit=satelit,
-                error=error,
-                start_date=start_date,
-                end_date=end_date,
+                error="Tanggal mulai dan tanggal selesai harus diisi!",
                 show_segment=False
             )
         
+        # cek kalau masukkan tanggal salah
+        if start_date > end_date:
+            return render_template(
+                "predict.html",
+                satelit=satelit,
+                error="Tanggal mulai tidak boleh melebihi tanggal akhir.",
+                show_segment = False
+            )
+        
         # jalankan model machine learning sesuai tipe satelit yang dipilih
-        if satelit == 'sentinel':
-            print("do sentinel model")
-        else:
-            print("do landsat model")
+        filepath = f'../web_app/static/assets/custom_model/raw_data.tif'
+
+        # catch exception kalau misalnya gaada data di rentang tanggal masukkan
+        try:
+            if satelit == 'sentinel':
+                sentinel_model.init_predict_sentinel(start_date, end_date)
+                coastline.extract_coastline_from_input(filepath, start_date, end_date)
+            else:
+                landsat_model.init_predict_landsat(start_date, end_date)
+                coastline.extract_coastline_from_input(filepath, start_date, end_date)
+        except EEException:
+            return render_template(
+                "predict.html",
+                satelit=satelit,
+                error="Data tidak ada pada tanggal yang ditentukan."
+            )
+
+        predictionPath = f'../static/assets/custom_model/prediction.png'
+        coastlinePath = f'../static/assets/custom_model/coastline.png'
 
         return render_template(
             "predict.html",
             satelit=satelit,
             start_date = start_date,
             end_date = end_date,
+            predictionPath = predictionPath,
+            coastlinePath = coastlinePath,
             show_img_container = "show"
         )
     

@@ -75,7 +75,8 @@
                         </div>
                     </div>
                     <div class="imgResult">
-                        <span class="curResult">gambar</span>
+                        <img class = "predict-img" src="{{ url_for('static', filename='assets/custom_model/prediction.png') }}" alt="Hasil Prediksi">
+                        <!-- <span class="curResult">gambar</span> -->
                     </div>
                 </div>
             </div>
@@ -193,7 +194,7 @@ setDefaultPrediksi();
 prediksiBtn.addEventListener("click", () => {
     prediksiBtn.classList.add("active");
     garisBtn.classList.remove("active");
-    curResult.innerText = "Hasil Prediksi";
+    // curResult.innerText = "Hasil Prediksi";
 });
 
 garisBtn.addEventListener("click", () => {
