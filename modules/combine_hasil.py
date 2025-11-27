@@ -356,3 +356,55 @@ def generate_prediction_all_by_year(year):
     out_file = os.path.join(OUTPUT_DIR_2, f"prediction_all_{year}.png")
     plt.savefig(out_file, dpi=300, bbox_inches="tight")
     plt.close(fig)
+
+def generate_coastlines_all_by_year(year):
+    coastlines_all = generate_coastline_all()
+
+    # Ambil data untuk tahun tertentu
+    data_year = [c for c in coastlines_all if c["year"] == year]
+    if not data_year:
+        print(f"[WARN] Tidak ada data coastline untuk tahun {year}")
+        return None
+
+    # Perioda yang kemungkinan muncul (urutkan supaya konsisten)
+    periods = ["Jan_Jun", "Jul_Des", "Jan_Mar", "Apr_Jun", "Jul_Sep", "Okt_Des"]
+
+    # Warna: satu warna per perioda (gradasi)
+    cmap = cm.Blues
+    grad_colors = cmap(np.linspace(0.3, 1.0, len(periods)))
+    color_map = {periods[i]: grad_colors[i] for i in range(len(periods))}
+
+    # Buat figure
+    plt.figure(figsize=(12, 10))
+
+    for item in data_year:
+        period = item["period"]
+        coastline = item["coastline"]
+
+        # jika period tidak di daftar periods, tambahkan ke mapping warna dengan next color
+        if period not in color_map:
+            # fallback: gunakan last color
+            color = grad_colors[-1]
+        else:
+            color = color_map[period]
+
+        for contour in coastline:
+            xs = [pt[0] for pt in contour]
+            ys = [pt[1] for pt in contour]
+            plt.plot(xs, ys, color=color, linewidth=1, label=f"{period} {year}")
+
+    # Hilangkan duplikat legend
+    handles, labels = plt.gca().get_legend_handles_labels()
+    by_label = dict(zip(labels, handles))
+    plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05, 1), loc="upper left")
+
+    plt.title(f"Coastlines {year} (semua perioda)")
+    plt.xlabel("Longitude")
+    plt.ylabel("Latitude")
+    plt.axis("equal")
+
+    out_path = os.path.join(OUTPUT_DIR, f"coastline_year_{year}.png")
+    plt.savefig(out_path, dpi=300, bbox_inches='tight')
+    plt.close()
+
+    return out_path    
