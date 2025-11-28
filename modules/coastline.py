@@ -3,6 +3,8 @@ import numpy as np
 from io import BytesIO
 from scipy import ndimage
 from skimage import measure
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import random
 random.seed(42)
