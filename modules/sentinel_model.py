@@ -13,7 +13,7 @@ np.random.seed(42)
 # 1) Authenticate & init
 # -------------------------
 try:
-    ee.Initialize(project="ee-johnsonnn")
+    ee.Initialize(project="ee-axeltriyudha")
 except ee.EEException:
     ee.Authenticate()
     ee.Initialize()
@@ -1666,16 +1666,16 @@ def init_predict_sentinel (startDate, endDate):
     img = Image.open(BytesIO(resp.content))
     
     # optionally save to disk
-    out_path = f"prediction/prediction_{startDate}_{endDate}.png"
-    img.save(out_path)
-    print(f"Saved prediction image to {out_path}")
+    # out_path = f"../web_app/static/assets/custom_model/prediction_{startDate}_{endDate}.png"
+    # img.save(out_path)
+    # print(f"Saved prediction image to {out_path}")
     
     # plot show prediction (raw)
-    plt.figure(figsize=(8, 8))
-    plt.imshow(img)
-    plt.axis('off')
-    plt.title(f"prediction {startDate} {endDate}")
-    plt.show()
+    # plt.figure(figsize=(8, 8))
+    # plt.imshow(img)
+    # plt.axis('off')
+    # plt.title(f"prediction {startDate} {endDate}")
+    # plt.show()
 
     url = viz_image.getDownloadURL({
         'region': area,
@@ -1686,7 +1686,7 @@ def init_predict_sentinel (startDate, endDate):
 
     # Unduh dalam bentuk file
     response = requests.get(url)
-    filename = f"geotiff/prediction_{startDate}_{endDate}.tif"
+    filename = f"../web_app/static/assets/custom_model/raw_data.tif"
     with open(filename, "wb") as f:
         f.write(response.content)
     

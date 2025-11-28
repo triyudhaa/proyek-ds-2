@@ -181,7 +181,10 @@ def extract_coastline_from_input(filepath, startDate, endDate, water_value=1, la
     plt.figure(figsize=(8, 8))
     plt.imshow(array, cmap="coolwarm")
     plt.axis('off')
-    plt.title(f"Prediction After Smoothing {startDate} {endDate}")
+    plt.title(f"Prediksi {startDate} sampai {endDate}")
+    plt.savefig(f'../web_app/static/assets/custom_model/prediction.png',
+                dpi=300, 
+                bbox_inches='tight')
     # plt.show()
 
     # Step 3: Identifikasi laut (air yang terhubung ke tepi)
@@ -226,8 +229,10 @@ def extract_coastline_from_input(filepath, startDate, endDate, water_value=1, la
         plt.plot(xs, ys, linewidth=2, label=f"{startDate} {endDate}")
 
     # plot coastline
-    plt.title(f"Coastline {startDate} {endDate}")
+    plt.title(f"Garis Pantai {startDate} sampai {endDate}")
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
-    plt.axis('off')
-    plt.show()
+    # plt.show()
+    plt.savefig(f'../web_app/static/assets/custom_model/coastline.png',
+            dpi=300, 
+            bbox_inches='tight')
