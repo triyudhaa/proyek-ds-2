@@ -7,15 +7,18 @@ import combine_hasil
 
 # General Coastline Landsat 
 # combine_hasil.generate_coastline_all()
-combine_hasil.avg_coastline(2)
-combine_hasil.avg_coastline(4)
-combine_hasil.avg_coastline(6)
-# combine_hasil.generate_coastline_compare(2019, 2023)
+# combine_hasil.avg_coastline(2)
+# combine_hasil.avg_coastline(4)
+# combine_hasil.avg_coastline(6)
+# combine_hasil.generate_coastline_compare(2012, 2023)
 # combine_hasil.generate_coastline_compare(2023)
 # combine_hasil.generate_coastline_compare_avg(2013)
 # combine_hasil.generate_coastline_compare_avg(2023)
 
-# combine_hasil.generate_prediction_all_by_year(2024)
+# for i in range(2013, 2024): 
+#     combine_hasil.generate_prediction_all_by_year(i)
+for i in range(2013, 2024):
+    combine_hasil.generate_coastlines_all_by_year(i)
 
 # General Coastline Sentinel-2
 # coastline_sentinel = sentinel_hasil.generate_coastline_sentinel()

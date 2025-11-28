@@ -155,6 +155,7 @@
     var selectedYear = null;
     var status = "prediksi";
     const baseImgPath = "{{ url_for('static', filename='assets/predictions/') }}";
+    const baseImgPathCoastlines = "{{ url_for('static', filename='assets/coastlines/') }}";
 
     detail.style.display = "none";
 
@@ -178,7 +179,7 @@
         }
 
         if (status == "garis") {
-            const imgSrc = `${baseImgPath}prediction_all_${selectedYear}.png`;
+            const imgSrc = `${baseImgPathCoastlines}coastline_year_${selectedYear}.png`;
             imgCon.innerHTML = `<span id=image-title></span> `;
             imgCon.innerHTML = `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
         }
