@@ -94,24 +94,31 @@
                         <div class="perubahan-daerah">
                             <span id="title-perubahan">Analisis Perubahan Daerah</span>
 
+                            {% if periodes %}
+                            {% for p in periodes %}
                             <div class="perubahan-group">
-                                <span id="periode">{StartDate} - {EndDate}</span>
-                                <div class="deskripsi-group">
-                                    <span id="deskripsi">Perbandingan dengan </span>
-                                    <span>{StartDate-1} - {EndDate-1}</span>
-                                </div>
+
+                                <!-- Periode -->
+                                <span id="periode">{{ p.startdate }} - {{ p.enddate }}</span>
+
+                                <!-- Akresi -->
                                 <div class="akresi-group">
                                     <span>Akresi Daerah:</span>
-                                    <span>xx</span>
+                                    <span>{{ p.akresi if p.akresi not in [None, ''] else '-' }}</span>
                                 </div>
 
+                                <!-- Abrasi -->
                                 <div class="abrasi-group">
                                     <span>Abrasi Daerah:</span>
-                                    <span>xx</span>
+                                    <span>{{ p.abrasi if p.abrasi not in [None, ''] else '-' }}</span>
                                 </div>
-
                             </div>
+                            {% endfor %}
+                            {% else %}
+                            <p style="font-style: italic; color: red;">Data tidak tersedia untuk tahun ini</p>
+                            {% endif %}
                         </div>
+
                     </div>
 
                 </div>
