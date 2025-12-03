@@ -194,7 +194,8 @@
         if (status == "garis") {
             const imgSrc = `${baseImgPathCoastlines}coastline_year_${selectedYear}.png`;
             imgCon.innerHTML = `<span id=image-title>Hasil Garis Pantai Tahun ${selectedYear}</span> `;
-            imgCon.innerHTML = `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
+            imgCon.innerHTML += `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
+            imgCon.style.justifyContent = 'flex-start';
         }
 
 
