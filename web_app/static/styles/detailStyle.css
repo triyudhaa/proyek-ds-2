@@ -180,8 +180,10 @@ body {
 .images-container {
     width: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    row-gap: 20px;
 }
 
 #desc-kosong {
@@ -195,4 +197,10 @@ body {
 
 .images-container img {
     width: 650px;
+}
+
+#image-title {
+    width: 100%;
+    font-weight: 600;
+    color: #103A5E;
 }
