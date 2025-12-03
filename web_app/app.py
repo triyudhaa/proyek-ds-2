@@ -5,12 +5,14 @@ sys.path.append("..")
 from modules import sentinel_model
 from modules import landsat_model
 from modules import coastline
+import pandas as pd
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.jinja_env.auto_reload = True
 
-
+df_perubahan = pd.read_csv("hasil_akresi_abrasi_per_tahun.csv")
+print(df_perubahan)
 @app.route("/")
 def dashboard():
     return render_template('dashboard.html')
@@ -21,8 +23,41 @@ def detail():
 
 @app.route("/detail/<year>/<status>")
 def detail_with_params(year, status):
-    # print(year, status)
-    return render_template("detail.html", curYear=year, curStat=status)
+
+    # Filter berdasarkan tahun
+    data = df_perubahan[df_perubahan["tahun"] == int(year)]
+
+    # === Tambahkan kode sorting DI SINI ===
+
+    month_order = {
+        "Jan": 1, "Feb": 2, "Mar": 3,
+        "Apr": 4, "Mei": 5, "Jun": 6,
+        "Jul": 7, "Agu": 8, "Sep": 9,
+        "Okt": 10, "Nov": 11, "Des": 12
+    }
+
+    def get_month_value(period_text):
+        # startdate contoh: "Jan_Mar"
+        start_month = period_text.split("_")[0]
+        return month_order.get(start_month, 0)
+
+    # Urutkan berdasarkan bulan pertama
+    data = data.sort_values(
+        by="startdate",
+        key=lambda col: col.map(get_month_value)
+    )
+
+    # === END SORTING ===
+
+    # Ubah ke list supaya mudah digunakan di HTML
+    periodes = data.to_dict(orient="records")
+
+    return render_template(
+        "detail.html",
+        curYear=year,
+        curStat=status,
+        periodes=periodes
+    )
 
 @app.route("/predict/<satelit>", methods=['GET', 'POST'])
 def predict(satelit):
