@@ -31,7 +31,7 @@
                     Perbandingan Garis
                 </div>
 
-                <div class="sidebar-group" id="prediction" data-url="{{ url_for('predict') }}">
+                <div class="sidebar-group" id="prediction" data-url="{{ url_for('predict', satelit='sentinel') }}">
                     <img src="{{ url_for('static', filename='assets/prediction.png') }}">
                     Prediksi Baru
                 </div>
@@ -155,6 +155,7 @@
     var selectedYear = null;
     var status = "prediksi";
     const baseImgPath = "{{ url_for('static', filename='assets/predictions/') }}";
+    const baseImgPathCoastlines = "{{ url_for('static', filename='assets/coastlines/') }}";
 
     detail.style.display = "none";
 
@@ -178,6 +179,11 @@
             imgCon.style.justifyContent = 'flex-start';
         }
 
+        if (status == "garis") {
+            const imgSrc = `${baseImgPathCoastlines}coastline_year_${selectedYear}.png`;
+            imgCon.innerHTML = `<span id=image-title></span> `;
+            imgCon.innerHTML = `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
+        }
 
 
 

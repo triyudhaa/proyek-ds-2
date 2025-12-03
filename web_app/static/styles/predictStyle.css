@@ -147,3 +147,7 @@ body {
     padding: 5px 20px 5px 20px;
     cursor: pointer;
 }
+
+.predict-img{
+    height: 550px;
+}

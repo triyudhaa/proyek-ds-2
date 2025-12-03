@@ -31,7 +31,7 @@
                     Perbandingan Garis
                 </div>
 
-                <div class="sidebar-group" id="prediction" data-url="{{ url_for('predict') }}">
+                <div class="sidebar-group" id="prediction" data-url="{{ url_for('predict', satelit='sentinel') }}">
                     <img src="{{ url_for('static', filename='assets/prediction.png') }}">
                     Prediksi Baru
                 </div>
@@ -40,28 +40,31 @@
             <div class="main-content">
                 <div class="side-container">
                     <div class="button-satelit">
-                        <span id="sentinel" class="active">Sentinel-2</span>
-                        <span id="landsat">Landsat-8</span>
+                        <span id="sentinel" class="{% if satelit == 'sentinel' %}active{% endif %}">Sentinel-2</span>
+                        <span id="landsat" class="{% if satelit == 'landsat' %}active{% endif %}">Landsat-8</span>
                     </div>
 
-                    <form class="input">
+                    <form class="input" method="POST">
                         <label>
                             Tanggal Awal:
-                            <input class="select-date" type="date" name="start-date"/>
+                            <input class="select-date" type="date" name="start_date" value="{{ start_date or '' }}"/>
                         </label>
 
                         <label>
                             Tanggal Akhir:
-                            <input class="select-date" type="date" name="end-date"/>
+                            <input class="select-date" type="date" name="end_date" value="{{ end_date or '' }}"/>
                         </label>
 
                         <button class="submit">
                             Submit
                         </button>
                     </form>
+                    {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                    {% endif %}
                 </div>
 
-                <div class="images-container hidden">
+                <div class="images-container {% if show_img_container != 'show' %}hidden{% endif %}">
                     <div class="titleResult">
                         <span class="curImage"></span>
                         <span class="range-date">Rentang Tanggal</span>
@@ -72,7 +75,9 @@
                         </div>
                     </div>
                     <div class="imgResult">
-                        <span class="curResult">gambar</span>
+                        <img class = "predict-img" id="prediksi_res" src="{{ url_for('static', filename='assets/custom_model/prediction.png') }}" alt="Hasil Prediksi">
+                        <img class = "predict-img hidden" id="garis_pantai_res" src="{{ url_for('static', filename='assets/custom_model/coastline.png') }}" alt="Hasil Garis Pantai">
+                        <!-- <span class="curResult">gambar</span> -->
                     </div>
                 </div>
             </div>
@@ -91,6 +96,11 @@ document.querySelectorAll('.sidebar-group').forEach(item => {
         window.location.href = url;
     });
 });
+
+/*update url*/
+function updateURL(satelit) {
+    window.location.href = `/predict/${satelit}`;
+}
     
 // === Dropdown Universal ===
 document.querySelectorAll(".select-menu").forEach(menu => {
@@ -151,12 +161,13 @@ const landsatBtn = document.getElementById("landsat");
 const curImage = document.querySelector(".curImage");
 const dateInputs = document.querySelectorAll(".select-date");
 
-setDefaultSentinel();
+// setDefaultSentinel();
 sentinelBtn.addEventListener("click", () => {
     sentinelBtn.classList.add("active");
     landsatBtn.classList.remove("active");
     curImage.innerText = "Hasil Prediksi Sentinel-2";
     document.querySelector(".images-container").classList.add("hidden");
+    updateURL('sentinel');
     updateDateRange();
 });
 
@@ -165,6 +176,7 @@ landsatBtn.addEventListener("click", () => {
     sentinelBtn.classList.remove("active");
     curImage.innerText = "Hasil Prediksi Landsat-8";
     document.querySelector(".images-container").classList.add("hidden");
+    updateURL('landsat');
     updateDateRange();
 });
 
@@ -172,34 +184,38 @@ landsatBtn.addEventListener("click", () => {
 const prediksiBtn = document.getElementById("prediksi");
 const garisBtn = document.getElementById("garis");
 const curResult = document.querySelector(".curResult");
+const imgPrediksi = document.getElementById('prediksi_res');
+const imgGarisPantai = document.getElementById('garis_pantai_res');
 
 function setDefaultPrediksi() {
     document.getElementById("prediksi").classList.add("active");
     document.getElementById("garis").classList.remove("active");
-    document.querySelector(".curResult").innerText = "Hasil Prediksi";
+    imgGarisPantai.classList.add("hidden");
+    imgPrediksi.classList.remove("hidden");
 }
 
 setDefaultPrediksi();
 prediksiBtn.addEventListener("click", () => {
     prediksiBtn.classList.add("active");
     garisBtn.classList.remove("active");
-    curResult.innerText = "Hasil Prediksi";
+    imgGarisPantai.classList.add("hidden");
+    imgPrediksi.classList.remove("hidden");
 });
 
 garisBtn.addEventListener("click", () => {
     garisBtn.classList.add("active");
     prediksiBtn.classList.remove("active");
-    curResult.innerText = "Garis Pantai";
+    imgGarisPantai.classList.remove("hidden");
+    imgPrediksi.classList.add("hidden");
 });
 
 // === Submit behavior ===
-document.querySelector(".submit").addEventListener("click", function (e) {
-    e.preventDefault();
+// document.querySelector(".submit").addEventListener("click", function (e) {
 
-    // === Tampilkan bagian yang tersembunyi ===
-    document.querySelector(".images-container").classList.remove("hidden");
+//     // === Tampilkan bagian yang tersembunyi ===
+//     document.querySelector(".images-container").classList.remove("hidden");
     
-    // === Set Default State (Mean) ===
-    setDefaultPrediksi();
-});
+//     // === Set Default State (Mean) ===
+//     setDefaultPrediksi();
+// });
 </script>
