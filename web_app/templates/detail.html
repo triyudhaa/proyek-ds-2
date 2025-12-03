@@ -173,8 +173,9 @@
 
         if (status == "prediksi") {
             const imgSrc = `${baseImgPath}prediction_all_${selectedYear}.png`;
-            imgCon.innerHTML = `<span id=image-title></span> `;
-            imgCon.innerHTML = `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
+            imgCon.innerHTML = `<span id=image-title> Hasil Prediksi Perairan Daratan Tahun ${selectedYear}</span>`;
+            imgCon.innerHTML += `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
+            imgCon.style.justifyContent = 'flex-start';
         }
 
 
