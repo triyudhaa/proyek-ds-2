@@ -6,6 +6,7 @@ from skimage import measure
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 import random
 random.seed(42)
 np.random.seed(42)
@@ -78,8 +79,18 @@ def extract_coastline_from_geotiff(filepath, year, period, water_value=1, land_v
     # Pastikan array binary (0 dan 1)
     water_mask = (array == water_value)
     
+    # fig, ax = plt.subplots(figsize=(8, 8))
+    # ax.imshow(array, cmap="coolwarm")
+    # ax.axis("off")
+    # ax.set_title(f"Prediction After Smoothing - {year}_{period}")
+    
+    #=== Perubahan Warna ====
+    cmap = colors.ListedColormap(["#B40B27", "#3C4DC1"])
+    bounds = [0, 0.5, 1]
+    norm = colors.BoundaryNorm(bounds, cmap.N)
+
     fig, ax = plt.subplots(figsize=(8, 8))
-    ax.imshow(array, cmap="coolwarm")
+    ax.imshow(array, cmap=cmap, norm=norm)
     ax.axis("off")
     ax.set_title(f"Prediction After Smoothing - {year}_{period}")
 
