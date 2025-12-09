@@ -8,7 +8,7 @@ from PIL import Image
 random.seed(42)
 np.random.seed(42)
 
-import coastline
+from . import coastline
 
 # --- Tentukan path folder utama proyek ---
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # naik 1 level dari modules/
