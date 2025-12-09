@@ -181,14 +181,21 @@
 
         if (status == "prediksi") {
             const imgSrc = `${baseImgPath}prediction_all_${selectedYear}.png`;
-            imgCon.innerHTML = `<span id=image-title></span> `;
-            imgCon.innerHTML = `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
+            imgCon.innerHTML = `<span id=image-title > Hasil Prediksi Perairan Daratan Tahun ${selectedYear}</span>`;
+            imgCon.innerHTML += `<img src="${imgSrc}" id=image-pics alt="Prediksi ${selectedYear}">`;
+            imgCon.style.justifyContent = 'flex-start';
+
+            if (selectedYear == 2022) {
+                const img2022 = document.getElementById("image-pics");
+                img2022.style.width = "400px";
+            }
         }
 
         if (status == "garis") {
             const imgSrc = `${baseImgPathCoastlines}coastline_year_${selectedYear}.png`;
-            imgCon.innerHTML = `<span id=image-title></span> `;
-            imgCon.innerHTML = `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
+            imgCon.innerHTML = `<span id=image-title>Hasil Garis Pantai Tahun ${selectedYear}</span> `;
+            imgCon.innerHTML += `<img src="${imgSrc}" alt="Prediksi ${selectedYear}">`;
+            imgCon.style.justifyContent = 'flex-start';
         }
 
 

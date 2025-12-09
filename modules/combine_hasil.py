@@ -371,7 +371,8 @@ def generate_coastlines_all_by_year(year):
 
     # Warna: satu warna per perioda (gradasi)
     cmap = cm.Blues
-    grad_colors = cmap(np.linspace(0.3, 1.0, len(periods)))
+    # grad_colors = cmap(np.linspace(0.3, 1.0, len(periods)))
+    grad_colors = cmap([0.75, 1, 0.475, 0.65, 0.825, 1])
     color_map = {periods[i]: grad_colors[i] for i in range(len(periods))}
 
     # Buat figure
