@@ -10,7 +10,7 @@ import combine_hasil
 # combine_hasil.avg_coastline(2)
 # combine_hasil.avg_coastline(4)
 # combine_hasil.avg_coastline(6)
-# combine_hasil.generate_coastline_compare(2012, 2023)
+# combine_hasil.generate_coastline_compare(2018, 2019)
 # combine_hasil.generate_coastline_compare(2023)
 # combine_hasil.generate_coastline_compare_avg(2013)
 # combine_hasil.generate_coastline_compare_avg(2023)
