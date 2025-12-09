@@ -17,7 +17,7 @@ import combine_hasil
 
 # for i in range(2013, 2024): 
 #     combine_hasil.generate_prediction_all_by_year(i)
-for i in range(2013, 2024):
+for i in range(2013, 2025):
     combine_hasil.generate_coastlines_all_by_year(i)
 
 # General Coastline Sentinel-2
