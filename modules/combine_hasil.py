@@ -398,7 +398,7 @@ def generate_coastlines_all_by_year(year):
     by_label = dict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05, 1), loc="upper left")
 
-    plt.title(f"Coastlines {year} (semua perioda)")
+    plt.title(f"Coastlines {year} (Seluruh Periode)")
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
     plt.axis("equal")
