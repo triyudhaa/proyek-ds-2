@@ -477,7 +477,6 @@ def plot_coastline_distances(method, data, num_samples=8):
 
     # Cari pasangan index dengan longitude terdekat
     matched_indices = find_index_pair(first, last, num_samples)
-    print(matched_indices)
     # Hitung jarak untuk setiap pasangan titik
     distances = []
     for idx_first, idx_last in matched_indices:
