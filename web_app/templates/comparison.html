@@ -41,7 +41,7 @@
                 <div class="side-container">
                     <span id="title">Pilih Rentang Tahun</span>
                     <form class="input" method="POST">
-                        <div class="start-year">
+                        <div class="start-year" data-selected="{{ start_year }}">
                             <span>Tahun Awal:</span>
                             <div class="select-menu">
                                 <div class="select-btn">
@@ -87,7 +87,7 @@
                             </div>
                         </div>
                         
-                        <div class="end-year">
+                        <div class="end-year" data-selected="{{ end_year }}">
                             <span>Tahun Akhir:</span>
                             <div class="select-menu">
                                 <div class="select-btn">
@@ -132,8 +132,8 @@
                                 </ul>
                             </div>
                         </div>
-                        <input type="hidden" name="end_yr" id="end-year-input">
-                        <input type="hidden" name="start_yr" id="start-year-input">
+                        <input type="hidden" name="end_yr" id="end-year-input" value="{{ start_year }}">
+                        <input type="hidden" name="start_yr" id="start-year-input" value="{{ end_year }}">
                         
                         <button class="submit">
                             Submit
@@ -143,7 +143,7 @@
                         {% endif %}
                     </form>
 
-                    <div class="button-mean-all hidden">
+                    <div class="button-mean-all {% if show_segment != 'show' %}hidden{% endif %}">
                         <span id="mean">Rata-Rata</span>
                         <span id="all">Keseluruhan</span>
                     </div>
@@ -171,8 +171,9 @@
                     </div>
                 </div>
 
-                <div class="images-container hidden">
-                    <span class="curImage"></span>
+                <div class="images-container {% if show_segment != 'show' %}hidden{% endif %}">
+                    <img src="{{url_for('static', filename='assets/compare/predictionAvg.png')}}" class= "garis-pantai-img" id="garisPantaiAvg" alt="Garis Pantai Average">
+                    <img src="{{url_for('static', filename='assets/compare/predictionAll.png')}}" class="garis-pantai-img hidden" id="garisPantaiAll" alt="Garis Pantai All">
                 </div>
             </div>
         </div>
@@ -183,6 +184,22 @@
 </html>
 
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    function initDropdown(wrapperClass, inputId) {
+        const wrapper = document.querySelector(wrapperClass);
+        const selected = wrapper.dataset.selected;
+
+        if (selected) {
+            wrapper.querySelector(".sBtn-text").innerText = selected;
+            document.getElementById(inputId).value = selected;
+        }
+    }
+
+    initDropdown(".start-year", "start-year-input");
+    initDropdown(".end-year", "end-year-input");
+});
+
 /*side bar */
 document.querySelectorAll('.sidebar-group').forEach(item => {
     item.addEventListener('click', () => {
@@ -230,24 +247,30 @@ document.querySelectorAll('.start-year .option-text').forEach(item => {
 // === Mean button ===
 function setDefaultMean() {
     document.getElementById("mean").classList.add("active");
+    document.getElementById("garisPantaiAvg").classList.remove("hidden");
+    document.getElementById("garisPantaiAll").classList.add("hidden");
     document.getElementById("all").classList.remove("active");
-    document.querySelector(".curImage").innerText += "\nmean";
 }
 
+setDefaultMean();
 const meanBtn = document.getElementById("mean");
 const allBtn = document.getElementById("all");
 const curImage = document.querySelector(".curImage");
+const garisPantaiAll = document.getElementById("garisPantaiAll");
+const garisPantaiAvg = document.getElementById("garisPantaiAvg");
 
 meanBtn.addEventListener("click", () => {
     meanBtn.classList.add("active");
+    garisPantaiAll.classList.add("hidden");
+    garisPantaiAvg.classList.remove("hidden");
     allBtn.classList.remove("active");
-    curImage.innerText += "\nmean";
 });
 
 allBtn.addEventListener("click", () => {
     allBtn.classList.add("active");
+    garisPantaiAll.classList.remove("hidden");
+    garisPantaiAvg.classList.add("hidden");
     meanBtn.classList.remove("active");
-    curImage.innerText += "\nall";
 });
 
 
