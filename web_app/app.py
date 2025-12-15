@@ -5,6 +5,7 @@ sys.path.append("..")
 from modules import sentinel_model
 from modules import landsat_model
 from modules import coastline
+from modules import combine_hasil
 import pandas as pd
 
 app = Flask(__name__)
@@ -12,7 +13,7 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.jinja_env.auto_reload = True
 
 df_perubahan = pd.read_csv("hasil_akresi_abrasi_per_tahun.csv")
-print(df_perubahan)
+coastlines_all, _ = combine_hasil.init_result()
 @app.route("/")
 def dashboard():
     return render_template('dashboard.html')
@@ -65,8 +66,8 @@ def predict(satelit):
     if request.method == 'POST':
         start_date = request.form.get("start_date")
         end_date = request.form.get("end_date")
-        print(start_date)
-        print(end_date)
+        print("Tanggal awal:", start_date)
+        print("Tanggal akhir:", end_date)
 
         # cek tanggalnya diisi atau tidak
         if start_date == "" or end_date == "":
@@ -114,8 +115,40 @@ def predict(satelit):
     
     return render_template('predict.html', satelit=satelit)
 
-@app.route("/comparison")
+@app.route("/comparison", methods=['GET', 'POST'])
 def comparison():
+    if request.method == 'POST':
+        # get tahun dari form
+        start_year = request.form.get("start_yr")
+        end_year = request.form.get("end_yr")
+        print("Tahun awal:", start_year)
+        print("Tahun akhir:", end_year)
+
+        # cek tahun diisi atau tidak
+        if start_year == None or end_year == None:
+            return render_template(
+                "comparison.html",
+                error="Tahun awal dan tahun akhir harus diisi!",
+                show_segment= "hide"
+            )
+        
+        # cek kalau masukkan tahun salah
+        if start_year > end_year:
+            return render_template(
+                "comparison.html",
+                error="Tahun mulai tidak boleh melebihi tahun akhir.",
+                show_segment = "hide"
+            )
+        
+        # generate hasil perbandingan garis pantai
+        # generate buat all sama rata-rata
+        combine_hasil.generate_coastline_compare_new(int(start_year), int(end_year), coastlines_all)
+        combine_hasil.generate_coastline_compare_average(int(start_year), int(end_year), coastlines_all)
+        
+        return render_template('comparison.html',
+                               show_segment="show",
+                               start_year=start_year,
+                               end_year=end_year)
     return render_template('comparison.html')
 
 if __name__ == "__main__":

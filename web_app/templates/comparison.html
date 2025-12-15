@@ -40,8 +40,8 @@
             <div class="main-content">
                 <div class="side-container">
                     <span id="title">Pilih Rentang Tahun</span>
-                    <form class="input">
-                        <div class="start-year">
+                    <form class="input" method="POST">
+                        <div class="start-year" data-selected="{{ start_year }}">
                             <span>Tahun Awal:</span>
                             <div class="select-menu">
                                 <div class="select-btn">
@@ -86,8 +86,8 @@
                                 </ul>
                             </div>
                         </div>
-
-                        <div class="end-year">
+                        
+                        <div class="end-year" data-selected="{{ end_year }}">
                             <span>Tahun Akhir:</span>
                             <div class="select-menu">
                                 <div class="select-btn">
@@ -97,48 +97,53 @@
                                 <ul class="options">
                                     <li class="option">
                                         <span class="option-text" data-value="2013">2013</span></li>
-                                    <li class="option">
-                                        <span class="option-text" data-value="2014">2014</span></li>
-                                    <li class="option">
-                                        <span class="option-text" data-value="2015">2015</span>
-                                    </li>
-                                    <li class="option">
-                                        <span class="option-text" data-value="2016">2016</span>
-                                    </li>
-                                    <li class="option">
-                                        <span class="option-text" data-value="2017">2017</span>
-                                    </li>
-                                    <li class="option">
-                                        <span class="option-text" data-value="2018">2018</span>
-                                    </li>
-                                    <li class="option">
-                                        <span class="option-text" data-value="2019">2019</span>
-                                    </li>
-                                    <li class="option">
-                                        <span class="option-text" data-value="2020">2020</span>
-                                    </li>
-                                    <li class="option">
-                                        <span class="option-text" data-value="2021">2021</span>
-                                    </li>
-                                    <li class="option">
-                                        <span class="option-text" data-value="2022">2022</span>
-                                    </li>
-                                    <li class="option">
-                                        <span class="option-text" data-value="2023">2023</span>
-                                    </li>
-                                    <li class="option">
-                                        <span class="option-text" data-value="2024">2024</span>
+                                        <li class="option">
+                                            <span class="option-text" data-value="2014">2014</span></li>
+                                            <li class="option">
+                                                <span class="option-text" data-value="2015">2015</span>
+                                            </li>
+                                            <li class="option">
+                                                <span class="option-text" data-value="2016">2016</span>
+                                            </li>
+                                            <li class="option">
+                                                <span class="option-text" data-value="2017">2017</span>
+                                            </li>
+                                            <li class="option">
+                                                <span class="option-text" data-value="2018">2018</span>
+                                            </li>
+                                            <li class="option">
+                                                <span class="option-text" data-value="2019">2019</span>
+                                            </li>
+                                            <li class="option">
+                                                <span class="option-text" data-value="2020">2020</span>
+                                            </li>
+                                            <li class="option">
+                                                <span class="option-text" data-value="2021">2021</span>
+                                            </li>
+                                            <li class="option">
+                                                <span class="option-text" data-value="2022">2022</span>
+                                            </li>
+                                            <li class="option">
+                                                <span class="option-text" data-value="2023">2023</span>
+                                            </li>
+                                            <li class="option">
+                                                <span class="option-text" data-value="2024">2024</span>
                                     </li>
                                 </ul>
                             </div>
                         </div>
-
+                        <input type="hidden" name="end_yr" id="end-year-input" value="{{ start_year }}">
+                        <input type="hidden" name="start_yr" id="start-year-input" value="{{ end_year }}">
+                        
                         <button class="submit">
                             Submit
                         </button>
+                        {% if error %}
+                        <p style="color: red;">{{ error }}</p>
+                        {% endif %}
                     </form>
 
-                    <div class="button-mean-all hidden">
+                    <div class="button-mean-all {% if show_segment != 'show' %}hidden{% endif %}">
                         <span id="mean">Rata-Rata</span>
                         <span id="all">Keseluruhan</span>
                     </div>
@@ -166,8 +171,9 @@
                     </div>
                 </div>
 
-                <div class="images-container hidden">
-                    <span class="curImage"></span>
+                <div class="images-container {% if show_segment != 'show' %}hidden{% endif %}">
+                    <img src="{{url_for('static', filename='assets/compare/predictionAvg.png')}}" class= "garis-pantai-img" id="garisPantaiAvg" alt="Garis Pantai Average">
+                    <img src="{{url_for('static', filename='assets/compare/predictionAll.png')}}" class="garis-pantai-img hidden" id="garisPantaiAll" alt="Garis Pantai All">
                 </div>
             </div>
         </div>
@@ -178,6 +184,22 @@
 </html>
 
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    function initDropdown(wrapperClass, inputId) {
+        const wrapper = document.querySelector(wrapperClass);
+        const selected = wrapper.dataset.selected;
+
+        if (selected) {
+            wrapper.querySelector(".sBtn-text").innerText = selected;
+            document.getElementById(inputId).value = selected;
+        }
+    }
+
+    initDropdown(".start-year", "start-year-input");
+    initDropdown(".end-year", "end-year-input");
+});
+
 /*side bar */
 document.querySelectorAll('.sidebar-group').forEach(item => {
     item.addEventListener('click', () => {
@@ -204,71 +226,92 @@ document.querySelectorAll(".select-menu").forEach(menu => {
             menu.classList.remove("active");
         });
     });
+});
 
+// Form Start Year Input
+document.querySelectorAll('.end-year .option-text').forEach(item => {
+    item.addEventListener('click', function () {
+        const selectedYear = this.getAttribute('data-value');
+        document.getElementById('end-year-input').value = selectedYear;
+    });
+});
+
+// Form End Year Input
+document.querySelectorAll('.start-year .option-text').forEach(item => {
+    item.addEventListener('click', function () {
+        const selectedYear = this.getAttribute('data-value');
+        document.getElementById('start-year-input').value = selectedYear;
+    });
 });
 
 // === Mean button ===
 function setDefaultMean() {
     document.getElementById("mean").classList.add("active");
+    document.getElementById("garisPantaiAvg").classList.remove("hidden");
+    document.getElementById("garisPantaiAll").classList.add("hidden");
     document.getElementById("all").classList.remove("active");
-    document.querySelector(".curImage").innerText += "\nmean";
 }
 
+setDefaultMean();
 const meanBtn = document.getElementById("mean");
 const allBtn = document.getElementById("all");
 const curImage = document.querySelector(".curImage");
+const garisPantaiAll = document.getElementById("garisPantaiAll");
+const garisPantaiAvg = document.getElementById("garisPantaiAvg");
 
 meanBtn.addEventListener("click", () => {
     meanBtn.classList.add("active");
+    garisPantaiAll.classList.add("hidden");
+    garisPantaiAvg.classList.remove("hidden");
     allBtn.classList.remove("active");
-    curImage.innerText += "\nmean";
 });
 
 allBtn.addEventListener("click", () => {
     allBtn.classList.add("active");
+    garisPantaiAll.classList.remove("hidden");
+    garisPantaiAvg.classList.add("hidden");
     meanBtn.classList.remove("active");
-    curImage.innerText += "\nall";
 });
 
 
 // === Submit behavior ===
-document.querySelector(".submit").addEventListener("click", function (e) {
-    e.preventDefault();
+// document.querySelector(".submit").addEventListener("click", function (e) {
+//     e.preventDefault();
 
-    const startYear = document.querySelector(".start-year .sBtn-text").innerText;
-    const endYear = document.querySelector(".end-year .sBtn-text").innerText;
+//     const startYear = document.querySelector(".start-year .sBtn-text").innerText;
+//     const endYear = document.querySelector(".end-year .sBtn-text").innerText;
 
-    if (startYear === "Pilih Tahun" || endYear === "Pilih Tahun") {
-        alert("Invalid Input. Isi kedua input.");
-        return;
-    }
+//     // if (startYear === "Pilih Tahun" || endYear === "Pilih Tahun") {
+//     //     alert("Invalid Input. Isi kedua input.");
+//     //     return;
+//     // }
 
-    else if (startYear === endYear) {
-        alert("Invalid Input. Tahun awal harus berbeda dari tahun akhir.");
-        return;
-    }
+//     // else if (startYear === endYear) {
+//     //     alert("Invalid Input. Tahun awal harus berbeda dari tahun akhir.");
+//     //     return;
+//     // }
 
-    else if (startYear > endYear) {
-        alert("Invalid Input. Tahun awal tidak boleh lebih besar dari tahun akhir.");
-        return;
-    }
+//     // else if (startYear > endYear) {
+//     //     alert("Invalid Input. Tahun awal tidak boleh lebih besar dari tahun akhir.");
+//     //     return;
+//     // }
 
-    // === Tampilkan bagian yang tersembunyi ===
-    document.querySelector(".button-mean-all").classList.remove("hidden");
-    document.querySelector(".perubahan-daerah").classList.remove("hidden");
-    document.querySelector(".images-container").classList.remove("hidden");
+//     // === Tampilkan bagian yang tersembunyi ===
+//     document.querySelector(".button-mean-all").classList.remove("hidden");
+//     document.querySelector(".perubahan-daerah").classList.remove("hidden");
+//     document.querySelector(".images-container").classList.remove("hidden");
 
-    // === Update teks ===
-    document.querySelector(".curImage").innerText = 
-        `Periode dipilih: ${startYear} - ${endYear}`;
+//     // === Update teks ===
+//     document.querySelector(".curImage").innerText = 
+//         `Periode dipilih: ${startYear} - ${endYear}`;
 
-    document.querySelector("#periode").innerText = 
-        `${startYear} - ${endYear}`;
+//     document.querySelector("#periode").innerText = 
+//         `${startYear} - ${endYear}`;
 
-    document.querySelector(".deskripsi-group span:nth-child(2)").innerText =
-        `${startYear - 1} - ${endYear - 1}`;
+//     document.querySelector(".deskripsi-group span:nth-child(2)").innerText =
+//         `${startYear - 1} - ${endYear - 1}`;
     
-    // === Set Default State (Mean) ===
-    setDefaultMean();
-});
+//     // === Set Default State (Mean) ===
+//     setDefaultMean();
+// });
 </script>
