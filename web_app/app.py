@@ -66,8 +66,8 @@ def predict(satelit):
     if request.method == 'POST':
         start_date = request.form.get("start_date")
         end_date = request.form.get("end_date")
-        print(start_date)
-        print(end_date)
+        print("Tanggal awal:", start_date)
+        print("Tanggal akhir:", end_date)
 
         # cek tanggalnya diisi atau tidak
         if start_date == "" or end_date == "":
@@ -121,8 +121,8 @@ def comparison():
         # get tahun dari form
         start_year = request.form.get("start_yr")
         end_year = request.form.get("end_yr")
-        print(start_year)
-        print(end_year)
+        print("Tahun awal:", start_year)
+        print("Tahun akhir:", end_year)
 
         # cek tahun diisi atau tidak
         if start_year == None or end_year == None:
