@@ -151,5 +151,43 @@ def comparison():
                                end_year=end_year)
     return render_template('comparison.html')
 
+@app.route("/comparison2", methods=['GET', 'POST'])
+def comparison2():    
+    start_years = ['2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024']
+    end_years   = ['2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024']
+
+    # default value
+    selected_start = None
+    selected_end = None
+
+    if request.method == 'POST':
+        selected_start = request.form.get('startYear_select')
+        selected_end   = request.form.get('endYear_select')
+
+        if int(selected_start) > int(selected_end):
+            return render_template(
+                "comparison2.html",
+                start_years=start_years,
+                end_years=end_years,
+                selected_start=selected_start,
+                selected_end=selected_end,
+                error="Tahun mulai tidak boleh melebihi tahun akhir.",
+                show_segment="hide"
+            )
+
+        combine_hasil.generate_coastline_compare_new(int(selected_start), int(selected_end), coastlines_all)
+        combine_hasil.generate_coastline_compare_average(int(selected_start), int(selected_end), coastlines_all)
+
+        return render_template(
+            "comparison2.html",
+            start_years=start_years,
+            end_years=end_years,
+            selected_start=selected_start,
+            selected_end=selected_end,
+            show_segment="show"
+        )
+
+    return render_template("comparison2.html", start_years=start_years, end_years=end_years)
+
 if __name__ == "__main__":
     app.run(debug=True)

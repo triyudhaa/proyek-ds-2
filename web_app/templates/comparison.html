@@ -132,8 +132,8 @@
                                 </ul>
                             </div>
                         </div>
-                        <input type="hidden" name="end_yr" id="end-year-input" value="{{ start_year }}">
-                        <input type="hidden" name="start_yr" id="start-year-input" value="{{ end_year }}">
+                        <input type="hidden" name="start_yr" id="start-year-input" value="{{ start_year }}">
+                        <input type="hidden" name="end_yr" id="end-year-input" value="{{ end_year }}">
                         
                         <button class="submit">
                             Submit
@@ -184,22 +184,6 @@
 </html>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    function initDropdown(wrapperClass, inputId) {
-        const wrapper = document.querySelector(wrapperClass);
-        const selected = wrapper.dataset.selected;
-
-        if (selected) {
-            wrapper.querySelector(".sBtn-text").innerText = selected;
-            document.getElementById(inputId).value = selected;
-        }
-    }
-
-    initDropdown(".start-year", "start-year-input");
-    initDropdown(".end-year", "end-year-input");
-});
-
 /*side bar */
 document.querySelectorAll('.sidebar-group').forEach(item => {
     item.addEventListener('click', () => {
@@ -222,46 +206,55 @@ document.querySelectorAll(".select-menu").forEach(menu => {
     options.forEach(option => {
         option.addEventListener("click", () => {
             const text = option.querySelector(".option-text");
+            const value = text.dataset.value;
+
             sBtn_text.innerText = text.innerText;
             menu.classList.remove("active");
+
+            const wrapper = menu.closest(".start-year, .end-year");
+            if (wrapper.classList.contains("start-year")) {
+                document.getElementById("start-year-input").value = value;
+            } else {
+                document.getElementById("end-year-input").value = value;
+            }
         });
     });
 });
 
-// event delegation for option-text clicks
-document.addEventListener("pointerdown", function (e) {
+window.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".start-year, .end-year").forEach(wrapper => {
+        const selected = wrapper.dataset.selected;
+        if (!selected) return;
 
-    const option = e.target.closest(".option-text");
-    if (!option) return;
+        wrapper.querySelector(".sBtn-text").innerText = selected;
 
-    const dropdown = option.closest(".select-menu");
-    const wrapper = option.closest(".start-year, .end-year");
-
-    const value = option.dataset.value;
-    const label = option.innerText;
-
-    const hiddenInput = wrapper.querySelector("input[type='hidden']");
-    const btnText = wrapper.querySelector(".sBtn-text");
-
-    hiddenInput.value = value;
-    btnText.innerText = label;
-
-    dropdown.classList.remove("active");
+        if (wrapper.classList.contains("start-year")) {
+            document.getElementById("start-year-input").value = selected;
+        } else {
+            document.getElementById("end-year-input").value = selected;
+        }
+    });
 });
 
 // Form Start Year Input
-document.querySelectorAll('.end-year .option-text').forEach(item => {
-    item.addEventListener('click', function () {
-        const selectedYear = this.getAttribute('data-value');
-        document.getElementById('end-year-input').value = selectedYear;
+document.querySelectorAll(".start-year .option-text").forEach(option => {
+    option.addEventListener("click", () => {
+        const value = option.dataset.value;
+        const text = option.innerText;
+
+        document.querySelector(".start-year .sBtn-text").innerText = text;
+        document.getElementById("start-year-input").value = value;
     });
 });
 
 // Form End Year Input
-document.querySelectorAll('.start-year .option-text').forEach(item => {
-    item.addEventListener('click', function () {
-        const selectedYear = this.getAttribute('data-value');
-        document.getElementById('start-year-input').value = selectedYear;
+document.querySelectorAll(".end-year .option-text").forEach(option => {
+    option.addEventListener("click", () => {
+        const value = option.dataset.value;
+        const text = option.innerText;
+
+        document.querySelector(".end-year .sBtn-text").innerText = text;
+        document.getElementById("end-year-input").value = value;
     });
 });
 
