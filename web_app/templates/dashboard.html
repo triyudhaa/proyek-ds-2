@@ -47,6 +47,7 @@
                     <div class="garis-group" id="garis-2">2 Garis</div>
                     <div class="garis-group" id="garis-4">4 Garis</div>
                     <div class="garis-group" id="garis-6">6 Garis</div>
+                    <div class="garis-group" id="garis-best">Garis Terbaik</div>
                 </div>
 
                 <div class="img-garis">
@@ -82,6 +83,8 @@
                 imgSrc = '{{ url_for("static", filename="assets/coastlines/coastline_combined_4.png") }}';
             } else if (g.id === 'garis-6') {
                 imgSrc = '{{ url_for("static", filename="assets/coastlines/coastline_combined_6.png") }}';
+            } else if (g.id === 'garis-best') {
+                imgSrc = '{{ url_for("static", filename="assets/coastlines/coastline_combined_best.png") }}';
             }
 
             imgContainer.innerHTML = `<img src="${imgSrc}" alt="${g.textContent}">`;
