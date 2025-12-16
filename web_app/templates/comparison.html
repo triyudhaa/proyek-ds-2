@@ -228,6 +228,27 @@ document.querySelectorAll(".select-menu").forEach(menu => {
     });
 });
 
+// event delegation for option-text clicks
+document.addEventListener("pointerdown", function (e) {
+
+    const option = e.target.closest(".option-text");
+    if (!option) return;
+
+    const dropdown = option.closest(".select-menu");
+    const wrapper = option.closest(".start-year, .end-year");
+
+    const value = option.dataset.value;
+    const label = option.innerText;
+
+    const hiddenInput = wrapper.querySelector("input[type='hidden']");
+    const btnText = wrapper.querySelector(".sBtn-text");
+
+    hiddenInput.value = value;
+    btnText.innerText = label;
+
+    dropdown.classList.remove("active");
+});
+
 // Form Start Year Input
 document.querySelectorAll('.end-year .option-text').forEach(item => {
     item.addEventListener('click', function () {
