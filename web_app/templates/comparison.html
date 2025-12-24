@@ -142,39 +142,20 @@
                         <p style="color: red;">{{ error }}</p>
                         {% endif %}
                     </form>
+                </div>
 
+                <div class="result {% if show_segment != 'show' %}hidden{% endif %}">
                     <div class="button-mean-all {% if show_segment != 'show' %}hidden{% endif %}">
-                        <span id="mean">Rata-Rata</span>
+                        <span id="mean" class="active">Rata-Rata</span>
                         <span id="all">Keseluruhan</span>
                     </div>
-
-                    <div class="perubahan-daerah hidden">
-                        <span id="title-perubahan">Analisis Perubahan Daerah</span>
-
-                        <div class="perubahan-group">
-                            <span id="periode">{StartDate} - {EndDate}</span>
-                            <div class="deskripsi-group">
-                                <span id="deskripsi">Perbandingan dengan </span>
-                                <span>{StartDate-1} - {EndDate-1}</span>
-                            </div>
-                            <div class="akresi-group">
-                                <span>Akresi Daerah:</span>
-                                <span>xx</span>
-                            </div>
-
-                            <div class="abrasi-group">
-                                <span>Abrasi Daerah:</span>
-                                <span>xx</span>
-                            </div>
-
-                        </div>
+    
+                    <div class="images-container {% if show_segment != 'show' %}hidden{% endif %}">
+                        <img src="{{url_for('static', filename='assets/compare/predictionAvg.png')}}" class= "garis-pantai-img" id="garisPantaiAvg" alt="Garis Pantai Average">
+                        <img src="{{url_for('static', filename='assets/compare/predictionAll.png')}}" class="garis-pantai-img hidden" id="garisPantaiAll" alt="Garis Pantai All">
                     </div>
                 </div>
 
-                <div class="images-container {% if show_segment != 'show' %}hidden{% endif %}">
-                    <img src="{{url_for('static', filename='assets/compare/predictionAvg.png')}}" class= "garis-pantai-img" id="garisPantaiAvg" alt="Garis Pantai Average">
-                    <img src="{{url_for('static', filename='assets/compare/predictionAll.png')}}" class="garis-pantai-img hidden" id="garisPantaiAll" alt="Garis Pantai All">
-                </div>
             </div>
         </div>
     </div>

@@ -152,11 +152,24 @@ body {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
+}
+
+.result{
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    flex: 1;
 }
 
 .button-mean-all {
-    margin-top: 10px;
+    display: flex;
+    font-size: small;
+    column-gap: 5px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 7px;
+    border-bottom: 1px solid gray;
 }
 
 .button-mean-all span.active {
@@ -165,11 +178,12 @@ body {
 }
 
 .button-mean-all span {
-    margin-top: 10px;
+    background-color: #ebebeb;
     color: #103A5E;
-    border-radius: 20px;
+    border-radius: 10px 10px 0px 0px;
     padding: 5px 20px 5px 20px;
     cursor: pointer;
+    min-width: 100px;
 }
 
 .button-mean-all span:hover {
