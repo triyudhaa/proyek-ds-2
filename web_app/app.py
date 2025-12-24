@@ -125,7 +125,7 @@ def comparison():
         print("Tahun akhir:", end_year)
 
         # cek tahun diisi atau tidak
-        if start_year == None or end_year == None:
+        if not start_year or not end_year:
             return render_template(
                 "comparison.html",
                 error="Tahun awal dan tahun akhir harus diisi!",
