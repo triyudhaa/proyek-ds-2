@@ -7,18 +7,16 @@ np.random.seed(42)
 
 import coastline
 
-# ==== Path dasar & parameter ====
 years = range(2019, 2025)
 periods = ["q1", "q2", "q3", "q4"]
             
-# ==== LOOP untuk baca & koreksi semua file ====
 coastlines_all = []
 for year in years:
     for period in periods:
         filepath = f"SENTINEL2/prediction_final_{year}_{period}.tif"
 
         try:
-            # --- ekstraksi ---
+            # ekstraksi garis pantai
             ocean_mask, contours_pixel, contours_geo, meta, array = coastline.extract_coastline_from_geotiff(
                 filepath,
                 year,
@@ -40,12 +38,12 @@ for year in years:
             continue
             # print(f"Gagal baca {filepath}: {e}")
 
-# --- Setup warna ---
+# atur palet warna
 years = sorted(set([c["year"] for c in coastlines_all]))
 periods = ["q1", "q2", "q3", "q4"]
 colors = cm.tab20(np.linspace(0, 1, len(years) * len(periods)))  # palet warna
 
-# Mapping kombinasi (year, period) ke warna unik
+# mapping kombinasi (year, period) ke warna unik
 color_map = {}
 i = 0
 for y in years:
@@ -53,7 +51,7 @@ for y in years:
         color_map[(y, p)] = colors[i]
         i += 1
 
-# --- Plot gabungan ---
+# buat plot
 plt.figure(figsize=(12, 10))
 
 def generate_coastline_sentinel():
@@ -63,12 +61,11 @@ def generate_coastline_sentinel():
         coastline = item["coastline"]
 
         for contour in coastline:
-            xs = [pt[0] for pt in contour]  # x (longitude)
-            ys = [pt[1] for pt in contour]  # y (latitude)
+            xs = [pt[0] for pt in contour]
+            ys = [pt[1] for pt in contour]
             plt.plot(xs, ys, color=color_map[(year, period)], linewidth=1,
                     label=f"{period} {year}")
 
-    # Hilangkan duplikat di legend
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = dict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05, 1), loc="upper left")

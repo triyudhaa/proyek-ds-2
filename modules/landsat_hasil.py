@@ -7,18 +7,17 @@ np.random.seed(42)
 
 import coastline
 
-# ==== Path dasar & parameter ====
 years = range(2013, 2019)
 periods = ["Jan_Jun", "Jul_Des"]
             
-# ==== LOOP untuk baca & koreksi semua file ====
+# baca dan koreksi semua file
 coastlines_all = []
 for year in years:
     for period in periods:
         filepath = f"LANDSAT8/Landsat8_Predict_{year}_{period}.tif"
 
         try:
-            # --- ekstraksi ---
+            # ekstraksi garis pantai
             contours_pixel, contours_geo, meta, array = coastline.extract_coastline_from_geotiff_landsat(
                 filepath,
                 year,
@@ -40,12 +39,12 @@ for year in years:
             continue
             # print(f"Gagal baca {filepath}: {e}")
 
-# --- Setup warna ---
+# atur palet warna
 years = sorted(set([c["year"] for c in coastlines_all]))
 periods = ["Jan_Jun", "Jul_Des"]
-colors = cm.tab20(np.linspace(0, 1, len(years) * len(periods)))  # palet warna
+colors = cm.tab20(np.linspace(0, 1, len(years) * len(periods)))
 
-# Mapping kombinasi (year, period) ke warna unik
+# mapping kombinasi (year, period) ke warna unik
 color_map = {}
 i = 0
 for y in years:
@@ -53,7 +52,7 @@ for y in years:
         color_map[(y, p)] = colors[i]
         i += 1
 
-# --- Plot gabungan ---
+# buat plot
 plt.figure(figsize=(12, 10))
 
 def generate_coastline_landsat():
@@ -68,7 +67,6 @@ def generate_coastline_landsat():
             plt.plot(xs, ys, color=color_map[(year, period)], linewidth=1,
                     label=f"{period} {year}")
 
-    # Hilangkan duplikat di legend
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = dict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05, 1), loc="upper left")

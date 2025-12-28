@@ -11,15 +11,15 @@ np.random.seed(42)
 
 from . import coastline
 
-# --- Tentukan path folder utama proyek ---
+# setting path
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # naik 1 level dari modules/
 OUTPUT_DIR = os.path.join(BASE_DIR, "web_app", "static", "assets", "coastlines")
 OUTPUT_DIR_2 = os.path.join(BASE_DIR, "web_app", "static", "assets", "predictions")
 BASE_MODULES = os.path.dirname(__file__)
 
-# --- pastikan folder output ada ---
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+"""Konversi kuarter ke rentang bulan"""
 def convert_q_to_text(period):
         mapping = {
         "q1": "Jan_Mar",
@@ -29,14 +29,14 @@ def convert_q_to_text(period):
         }
         return mapping.get(period, period)
 
+"""Koreksi dan membuat data garis pantai dari semua file Landsat dan Sentinel"""
 def init_result():
     coastlines_all = []
-    # ==== Path dasar & parameter ====
     years = range(2013, 2019)
     periods = ["Jan_Jun", "Jul_Des"]
     listPlot = []
                 
-    # ==== LOOP untuk baca & koreksi semua file ====
+    # baca dan koreksi semua file Landsat
     for year in years:
         numPlot = 0
         for period in periods:
@@ -70,7 +70,7 @@ def init_result():
         listPlot.append(numPlot)
         # print(listPlot)     
 
-    # ==== Path dasar & parameter ====
+    # baca dan koreksi semua file Sentinel
     years = range(2019, 2025)
     periods = ["q1", "q2", "q3", "q4"]    
     for year in years:
@@ -79,7 +79,7 @@ def init_result():
             #filepath = f"modules/SENTINEL2/prediction_final_{year}_{period}.tif"
             filepath = os.path.join(BASE_MODULES, 'SENTINEL2', f"prediction_final_{year}_{period}.tif")
             try:
-                # --- ekstraksi ---
+                # ekstraksi coastline
                 ocean_mask, contours_pixel, contours_geo, meta, array, fig = coastline.extract_coastline_from_geotiff(
                     filepath,
                     year,
@@ -110,19 +110,21 @@ def init_result():
 
     return coastlines_all, listPlot
 
+"""Plotting garis pantai yang sudah dihasilkan"""
 def generate_coastline_all():
     coastlines_all, listPlot = init_result()
     
-    # --- Setup warna ---
+    # atur palet warna
     years = sorted(set([c["year"] for c in coastlines_all]))
 
-    # Buat gradasi warna untuk seluruh tahun dalam range 0.3–1.0
+    # buat gradasi warna biru untuk semua tahun, range 0.3-1.0
     cmap = cm.Blues
     colors = cmap(np.linspace(0.3, 1.0, len(years)))
-    # Mapping: tahun -> warna
+
+    # mapping warna ke setiap tahun
     color_map = {year: colors[i] for i, year in enumerate(years)}
     
-    # --- Plot gabungan ---
+    # buat plot gabungan
     plt.figure(figsize=(12, 10))
     
     for item in coastlines_all:
@@ -136,7 +138,6 @@ def generate_coastline_all():
             plt.plot(xs, ys, color=color_map[year], linewidth=1,
                      label=f"{period} {year}")
 
-    # Hilangkan duplikat legend
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = dict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05, 1), loc="upper left")
@@ -151,16 +152,16 @@ def generate_coastline_all():
     return coastlines_all
 
 def generate_coastline_compare(startYear, endYear, coastlines_all):
-    # Tahun yang dipakai
     years = [startYear, endYear + 1]
     periods = ["Jan_Jun", "Jul_Des", "Jan_Mar", "Apr_Jun", "Jul_Sep", "Okt_Des"]
 
-    # Total kombinasi
     total_items = len(years) * len(periods)
-    cmap = cm.Blues  # pilih palette
-    grad_colors = cmap(np.linspace(0.3, 1.0, total_items))  # 30%–100% supaya kontras
 
-    # === Mapping kombinasi (year, period) -> warna ===
+    # gunakan warna biru dan atur gradasi
+    cmap = cm.Blues
+    grad_colors = cmap(np.linspace(0.3, 1.0, total_items))
+
+    # mapping kombinasi (year, period) ke warna unik
     color_map = {}
     idx = 0
     for y in years:
@@ -168,7 +169,7 @@ def generate_coastline_compare(startYear, endYear, coastlines_all):
             color_map[(y, p)] = grad_colors[idx]
             idx += 1
 
-    # --- Plot gabungan ---
+    # buat plot gabungan
     plt.figure(figsize=(12, 10))
 
     for item in coastlines_all:
@@ -189,7 +190,6 @@ def generate_coastline_compare(startYear, endYear, coastlines_all):
                 label=f"{period} {year}"
             )
 
-    # — Legend —
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = dict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05, 1), loc="upper left")
@@ -199,24 +199,24 @@ def generate_coastline_compare(startYear, endYear, coastlines_all):
     plt.ylabel("Latitude")
     plt.axis("equal")
 
+    # save plot
     # out_path = os.path.join(OUTPUT_DIR, f"coastline_compare_{startYear}-{endYear}.png")
     plt.savefig(f'../web_app/static/assets/compare/predictionAll.png', dpi=300, bbox_inches='tight')
     # plt.show()
 
 def interpolate_line(line, num_points):
-    """Interpolasi garis pantai agar punya jumlah titik seragam."""
     line = np.array(line)
     if len(line) < 2:
         return line
 
-    # Hitung jarak kumulatif antar titik
+    # hitung jarak kumulatif antara titik
     dist = np.cumsum(np.sqrt(np.sum(np.diff(line, axis=0) ** 2, axis=1)))
     dist = np.insert(dist, 0, 0)
 
-    # Buat target jarak dengan jumlah titik tetap
+    # buat target jarak dengan jumlah titik tetap
     target_dist = np.linspace(0, dist[-1], num_points)
 
-    # Interpolasi untuk x dan y
+    # interpolasi untuk x dan y
     x_interp = np.interp(target_dist, dist, line[:, 0])
     y_interp = np.interp(target_dist, dist, line[:, 1])
     return np.column_stack((x_interp, y_interp))
@@ -231,11 +231,13 @@ def avg_coastline(x, num_points=1000):
 
     avg_coastlines = []
 
+    # buat kelompok tahun
     while (year_start < year_end):
         now = int(year_start + increment - 1)
         year_group[f'{year_start}-{now}'] = [y for y in years if y >= year_start and y <= now]
         year_start = int(now + 1)
 
+    # hitung rata-rata garis pantai untuk setiap kelompok tahun
     for group_name, group_years in year_group.items():
         coastlines = []
         for c in coastlines_all:
@@ -247,10 +249,10 @@ def avg_coastline(x, num_points=1000):
             "mean_coastline": mean_coastline
         })
     
-    # === Visualisasi ===
+    # visualisasi
     plt.figure(figsize=(10, 8))
     
-    # Buat gradasi warna untuk seluruh tahun dalam range 0.3–1.0
+    # atur palet warna dan gradasi
     cmap = cm.Blues
     colors = cmap(np.linspace(0.3, 1.0, len(avg_coastlines)))
 
@@ -264,6 +266,7 @@ def avg_coastline(x, num_points=1000):
     plt.legend(loc="best", fontsize=9)
     plt.axis("equal")
     # plt.savefig(os.path.join(OUTPUT_DIR, f"coastline_combined_{x}.png"), dpi=300, bbox_inches='tight')
+    # save plot
     plt.savefig(os.path.join(OUTPUT_DIR, f"coastline_combined_{x}.png"),dpi=300, bbox_inches='tight')
     # plt.show()
 
@@ -359,22 +362,22 @@ def generate_prediction_all_by_year(year):
 def generate_coastlines_all_by_year(year):
     coastlines_all = generate_coastline_all()
 
-    # Ambil data untuk tahun tertentu
+    # ambil data sesuai tahun masukkan
     data_year = [c for c in coastlines_all if c["year"] == year]
     if not data_year:
         print(f"[WARN] Tidak ada data coastline untuk tahun {year}")
         return None
 
-    # Perioda yang kemungkinan muncul (urutkan supaya konsisten)
+    # periode yang ada
     periods = ["Jan_Jun", "Jul_Des", "Jan_Mar", "Apr_Jun", "Jul_Sep", "Okt_Des"]
 
-    # Warna: satu warna per perioda (gradasi)
+    # atur palet warna dan gradasi
     cmap = cm.Blues
     # grad_colors = cmap(np.linspace(0.3, 1.0, len(periods)))
     grad_colors = cmap([0.75, 1, 0.475, 0.65, 0.825, 1])
     color_map = {periods[i]: grad_colors[i] for i in range(len(periods))}
 
-    # Buat figure
+    # buat plot gabungan
     plt.figure(figsize=(12, 10))
 
     for item in data_year:
@@ -393,7 +396,6 @@ def generate_coastlines_all_by_year(year):
             ys = [pt[1] for pt in contour]
             plt.plot(xs, ys, color=color, linewidth=1, label=f"{period} {year}")
 
-    # Hilangkan duplikat legend
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = dict(zip(labels, handles))
     plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05, 1), loc="upper left")
@@ -409,9 +411,10 @@ def generate_coastlines_all_by_year(year):
 
     return out_path    
 
+"""Menghitung jarak dua koordinat (lat, lon) dalam meter menggunakan rumus Haversine."""
 def measure(lat1, lon1, lat2, lon2):
-    """Menghitung jarak dua koordinat (lat, lon) dalam meter menggunakan rumus Haversine."""
-    R = 6378.137  # radius Bumi dalam KM
+    # radius Bumi dalam KM
+    R = 6378.137
 
     dLat = math.radians(lat2 - lat1)
     dLon = math.radians(lon2 - lon1)
@@ -425,34 +428,20 @@ def measure(lat1, lon1, lat2, lon2):
 
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
-    d = R * c  # dalam KM
+    d = R * c
     return d * 1000  # ubah jadi meter
 
+
+"""Mencari pasangan index dari dua garis pantai berdasarkan kesamaan longitude."""
 def find_index_pair(first_line, last_line, num_samples=5):
-    """
-    Mencari pasangan index dari dua garis pantai berdasarkan kesamaan longitude.
 
-    Parameters:
-    -----------
-    first_line : np.array
-        Array koordinat garis pantai pertama (longitude, latitude)
-    last_line : np.array
-        Array koordinat garis pantai terakhir (longitude, latitude)
-    num_samples : int
-        Jumlah sampel yang ingin diambil
-
-    Returns:
-    --------
-    matched_indices : list of tuples
-        List berisi tuple (idx_first, idx_last) yang merupakan pasangan index
-    """
-    # Sampling index dari garis pertama
+    # sampling index dari garis pertama
     sample_indices_first = np.linspace(0, len(first_line)-1, num_samples).astype(int)
     matched_indices = []
     for idx_first in sample_indices_first:
         lon_first = first_line[idx_first, 0]
 
-        # Cari index pada garis terakhir yang memiliki longitude terdekat
+        # cari index pada garis terakhir yang memiliki longitude terdekat
         lon_differences = np.abs(last_line[:, 0] - lon_first)
         idx_last = np.argmin(lon_differences)
 
@@ -460,37 +449,30 @@ def find_index_pair(first_line, last_line, num_samples=5):
 
     return matched_indices
 
+"""Menghitung jarak antara dua garis pantai dan memplotnya."""
 def plot_coastline_distances(method, data, num_samples=8):
-    """
-    Memplot jarak antara dua garis pantai dengan matching longitude yang lebih akurat.
-
-    Parameters:
-    -----------
-    data : list of dictionaries
-        List dengan key "mean_coastline"
-    num_samples : int
-        Berapa banyak garis jarak yang ingin ditampilkan
-    """
-    # Ambil garis pertama dan terakhir
+    # ambil garis pertama dan terakhir
     first = np.array(data[0]["coastline"])
     last  = np.array(data[-1]["coastline"])
 
-    # Cari pasangan index dengan longitude terdekat
+    # cari pasangan index yang sesuai
     matched_indices = find_index_pair(first, last, num_samples)
-    # Hitung jarak untuk setiap pasangan titik
+
+    # hitung jarak untuk setiap pasangan titik
     distances = []
     for idx_first, idx_last in matched_indices:
         dist = measure(first[idx_first, 1], first[idx_first, 0],
                       last[idx_last, 1], last[idx_last, 0])
         distances.append(dist)
 
-    # ----- PLOTTING -----
+    # buat plot gabungan
     plt.figure(figsize=(10, 8))
 
-    # Definisi color map
+    # atur palet warna dan gradasi
     cmap = plt.get_cmap('Blues')
     coastline_colors = cmap(np.linspace(0.3, 1.0, len(data)))
 
+    # plot setiap garis pantai
     for i in range (len(data)):
       coastline = data[i]['coastline']
       plt.plot(coastline[:, 0], coastline[:, 1],
@@ -498,17 +480,18 @@ def plot_coastline_distances(method, data, num_samples=8):
                color=coastline_colors[i],
                label=f"Garis Pantai {data[i]['group_name']}")
 
+    # plot garis jarak antar garis pantai
     for idx, (idx_first, idx_last) in enumerate(matched_indices):
         x_vals = [first[idx_first, 0], last[idx_last, 0]]
         y_vals = [first[idx_first, 1], last[idx_last, 1]]
 
         plt.plot(x_vals, y_vals, '--', linewidth=1.5, color='black', alpha=0.7)
 
-        # Tambahkan marker pada titik-titik
+        # penambahan marker pada titik yang sudah dibuat
         plt.plot(first[idx_first, 0], first[idx_first, 1], 'bo', markersize=6)
         plt.plot(last[idx_last, 0], last[idx_last, 1], 'ro', markersize=6)
 
-        # Tambahkan background putih untuk teks agar lebih mudah dibaca
+        # background putih untuk teks jarak
         plt.text(x_vals[1], y_vals[0], f"{distances[idx]:.2f} m",
                 fontsize=9, ha='center',
                 bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8))
@@ -518,15 +501,19 @@ def plot_coastline_distances(method, data, num_samples=8):
     plt.xlabel("Longitude", fontsize=11)
     plt.ylabel("Latitude", fontsize=11)
 
+    # save plot
     if(method == "all"):
         plt.savefig(f'../web_app/static/assets/compare/predictionAll.png', dpi=300, bbox_inches='tight')
     elif(method == "avg"):
         plt.savefig(f'../web_app/static/assets/compare/predictionAvg.png', dpi=300, bbox_inches='tight')
     # plt.show()
 
+"""Menghasilkan plot perbandingan garis pantai berdasarkan tahun yang dipilih."""
 def generate_coastline_compare_new(startYear, endYear, coastlines_all):
     chosenYear = range(startYear, endYear + 1)
     filtered_coastlines = []
+
+    # filter data sesuai tahun yang dipilih
     for year in chosenYear:
         for c in coastlines_all:
             if(c["year"] == year):
@@ -539,24 +526,25 @@ def generate_coastline_compare_new(startYear, endYear, coastlines_all):
                     "coastline": interpolate_line(c["coastline"][0], num_points=1000),
                     "plot": c["plot"]
                 })
+    # plot garis pantai dan jarak antar garis pantai
     plot_coastline_distances("all", filtered_coastlines, num_samples=8)
 
+"""Menghitung dan memplot rata-rata garis pantai untuk kelompok tahun tertentu."""
 def generate_coastline_compare_average(startYear, endYear, coastlines_all, num_points=1000):
     chosenYear = range(startYear, endYear + 1)
     year_group = {}
     avg_coastlines = []
-
-    # Kelompokkan tahun
     year_start = startYear
     year_end = endYear + 1
     increment = 1
 
+    # buat kelompok tahun
     while (year_start < year_end):
         now = int(year_start + increment - 1)
         year_group[f'{year_start}'] = [y for y in chosenYear if y >= year_start and y <= now]
         year_start = int(now + 1)
 
-    # Hitung rata-rata garis pantai per kelompok tahun
+    # hitung rata-rata garis pantai untuk setiap kelompok tahun
     for group_name, group_years in year_group.items():
         coastlines = []
         for c in coastlines_all:
@@ -568,5 +556,5 @@ def generate_coastline_compare_average(startYear, endYear, coastlines_all, num_p
             "coastline": mean_coastline
         })
     
-    # Plot jarak antar garis pantai rata-rata
+    # plot garis pantai dan jarak antar garis pantai
     plot_coastline_distances("avg", avg_coastlines, num_samples=8)

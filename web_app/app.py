@@ -25,10 +25,8 @@ def detail():
 @app.route("/detail/<year>/<status>")
 def detail_with_params(year, status):
 
-    # Filter berdasarkan tahun
+    # filter berdasarkan tahun
     data = df_perubahan[df_perubahan["tahun"] == int(year)]
-
-    # === Tambahkan kode sorting DI SINI ===
 
     month_order = {
         "Jan": 1, "Feb": 2, "Mar": 3,
@@ -42,15 +40,13 @@ def detail_with_params(year, status):
         start_month = period_text.split("_")[0]
         return month_order.get(start_month, 0)
 
-    # Urutkan berdasarkan bulan pertama
+    # urutkan berdasarkan bulan pertama
     data = data.sort_values(
         by="startdate",
         key=lambda col: col.map(get_month_value)
     )
 
-    # === END SORTING ===
-
-    # Ubah ke list supaya mudah digunakan di HTML
+    # ubah ke list supaya mudah digunakan di HTML
     periodes = data.to_dict(orient="records")
 
     return render_template(
