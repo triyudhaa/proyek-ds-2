@@ -33,4 +33,4 @@ Pindah ke dalam direktori proyek proyek-ds-2
     cd web_app
     python app.py
 ```
-5. Perangkat lunak akan berjalan dengan mengakses `http://127.0.0.1:5000` pada browser. 
+5. Perangkat lunak akan berjalan dengan mengakses `http://127.0.0.1:5000` pada browser.
