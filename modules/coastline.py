@@ -18,7 +18,7 @@ Melakukan proses sliding window untuk smoothing hasil prediksi
     arr: numpy.ndarray
         Array 2D biner (0 = darat, 1 = air).
     window_size: int
-        Ukuran jendela (harus ganjil), default 7.
+        Ukuran jendela, harus ganjil (default 7).
 
     Returns
     -------
