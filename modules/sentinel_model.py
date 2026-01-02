@@ -11,9 +11,10 @@ np.random.seed(42)
 
 # -------------------------
 # 1) Inisialisasi dan Autentikasi Earth Engine
+# Parameter project disesuaikan dengan nama akun GEE
 # -------------------------
 try:
-    ee.Initialize(project="ee-axeltriyudha")
+    ee.Initialize(project="ee-tiffanytasyaagatha")  
 except ee.EEException:
     ee.Authenticate()
     ee.Initialize()
@@ -1610,6 +1611,10 @@ sampled = sampled.randomColumn('random', seed=42)
 trainSet = sampled.filter(ee.Filter.lt('random', 0.8))
 testSet = sampled.filter(ee.Filter.greaterThanOrEquals('random', 0.8))
 
+# -------------------------
+# 6) Function untuk model prediksi Random Forest 
+# Return: classifier -> hasil prediksi model
+# -------------------------
 def init_model():
     classifier = ee.Classifier.smileRandomForest(numberOfTrees=50, seed=42).train(
         features=trainSet,
@@ -1618,6 +1623,10 @@ def init_model():
     )
     return classifier
 
+# -------------------------
+# 7) Function untuk menggunakan model
+# Return: filename -> path file hasil prediksi 
+# -------------------------
 def init_predict_sentinel (startDate, endDate):
     s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
     image = (s2
