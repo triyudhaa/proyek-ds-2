@@ -10,18 +10,17 @@ np.random.seed(42)
 
 
 # -------------------------
-# 1) Authenticate & init
+# 1) Inisialisasi dan Autentikasi Earth Engine
+# Parameter project disesuaikan dengan nama akun GEE
 # -------------------------
 try:
-    ee.Initialize(project="ee-junitahariyati0717")
+    ee.Initialize(project="ee-tiffanytasyaagatha")  
 except ee.EEException:
     ee.Authenticate()
     ee.Initialize()
 
 # -------------------------
-# 2) > USER: set study area
-# Replace coordinates below with polygon for area of interest.
-# Example: small rectangle around your sample points.
+# 2) Penentuan Area Studi
 # -------------------------
 area = ee.Geometry.Polygon(
     [[[106.58696441861906, -5.993917699906236],
@@ -31,7 +30,7 @@ area = ee.Geometry.Polygon(
 )
 
 # -------------------------
-# 3) Image collection & preprocessing
+# 3) Pengumpulan Data Citra Sentinel-2 dan Preprocessing
 # -------------------------
 s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
 
@@ -51,14 +50,12 @@ image = (s2
          .clip(area)
         )
 
-# apply gaussian blur (same kernel you used)
+# aplikasi kernel gaussian untuk mengurangi noise
 kernel = ee.Kernel.gaussian(radius=4, sigma=0.7, units='pixels')
 image = image.convolve(kernel)
 
 # -------------------------
-# 4) Training points (water and land)
-# Replace coordinates/properties with your actual points/labels
-# Class property name must match `label` below ("Class")
+# 4) Penentuan Titik Training Air dan Darat
 # -------------------------
 water = ee.FeatureCollection([
     ee.Feature(
@@ -1597,12 +1594,11 @@ land = ee.FeatureCollection([
 training_fc = water.merge(land)
 
 # -------------------------
-# 5) Feature selection, sampleRegions
+# 5) Pemilihan Fitur dan Pembuatan Training Set serta Test Set
 # -------------------------
-bands = ['B5', 'B6', 'B7', 'B8', 'B11', 'NDWI']  # sesuai kode awalmu
+bands = ['B5', 'B6', 'B7', 'B8', 'B11', 'NDWI']
 input_image = image.select(bands)
 
-# sample regions to create training table (scale 10 for Sentinel-2)
 sampled = input_image.sampleRegions(
     collection=training_fc,
     properties=['Class'],
@@ -1610,11 +1606,15 @@ sampled = input_image.sampleRegions(
     geometries=True
 )
 
-# add random column and split
+# split menjadi train dan test set (80% train, 20% test)
 sampled = sampled.randomColumn('random', seed=42)
 trainSet = sampled.filter(ee.Filter.lt('random', 0.8))
 testSet = sampled.filter(ee.Filter.greaterThanOrEquals('random', 0.8))
 
+# -------------------------
+# 6) Function untuk model prediksi Random Forest 
+# Return: classifier -> hasil prediksi model
+# -------------------------
 def init_model():
     classifier = ee.Classifier.smileRandomForest(numberOfTrees=50, seed=42).train(
         features=trainSet,
@@ -1623,6 +1623,10 @@ def init_model():
     )
     return classifier
 
+# -------------------------
+# 7) Function untuk menggunakan model
+# Return: filename -> path file hasil prediksi 
+# -------------------------
 def init_predict_sentinel (startDate, endDate):
     s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
     image = (s2
@@ -1632,7 +1636,6 @@ def init_predict_sentinel (startDate, endDate):
          .map(add_ndwi)
          .median()
          .clip(area))
-    # apply gaussian blur (same kernel you used)
     kernel = ee.Kernel.gaussian(radius=4, sigma=0.7, units='pixels')
     image = image.convolve(kernel)
     input_image = image.select(bands)
@@ -1646,17 +1649,16 @@ def init_predict_sentinel (startDate, endDate):
         'palette': ['#b30326', '#3a4cc0']
     }
 
-    # Visualize via .visualize() and request a thumbnail
+    # visualisasi dan generate thumbnail untuk download
     viz_image = classified.visualize(min=classification_vis['min'],
                                     max=classification_vis['max'],
                                     palette=classification_vis['palette'])
 
-    # get region as GeoJSON (small areas recommended)
-    region_geojson = area.getInfo()  # blocks until server responds
+    region_geojson = area.getInfo()
 
     thumb_params = {
         'region': region_geojson,
-        'dimensions': 1024,   # change if too large
+        'dimensions': 1024,   
         'format': 'png'
     }
 
@@ -1684,7 +1686,7 @@ def init_predict_sentinel (startDate, endDate):
         'format': 'GEO_TIFF'
     })
 
-    # Unduh dalam bentuk file
+    # download prediksi dalam format GeoTIFF
     response = requests.get(url)
     filename = f"../web_app/static/assets/custom_model/raw_data.tif"
     with open(filename, "wb") as f:

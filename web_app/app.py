@@ -25,10 +25,8 @@ def detail():
 @app.route("/detail/<year>/<status>")
 def detail_with_params(year, status):
 
-    # Filter berdasarkan tahun
+    # filter berdasarkan tahun
     data = df_perubahan[df_perubahan["tahun"] == int(year)]
-
-    # === Tambahkan kode sorting DI SINI ===
 
     month_order = {
         "Jan": 1, "Feb": 2, "Mar": 3,
@@ -42,15 +40,13 @@ def detail_with_params(year, status):
         start_month = period_text.split("_")[0]
         return month_order.get(start_month, 0)
 
-    # Urutkan berdasarkan bulan pertama
+    # urutkan berdasarkan bulan pertama
     data = data.sort_values(
         by="startdate",
         key=lambda col: col.map(get_month_value)
     )
 
-    # === END SORTING ===
-
-    # Ubah ke list supaya mudah digunakan di HTML
+    # ubah ke list supaya mudah digunakan di HTML
     periodes = data.to_dict(orient="records")
 
     return render_template(
@@ -125,7 +121,7 @@ def comparison():
         print("Tahun akhir:", end_year)
 
         # cek tahun diisi atau tidak
-        if start_year == None or end_year == None:
+        if not start_year or not end_year:
             return render_template(
                 "comparison.html",
                 error="Tahun awal dan tahun akhir harus diisi!",
@@ -150,44 +146,6 @@ def comparison():
                                start_year=start_year,
                                end_year=end_year)
     return render_template('comparison.html')
-
-@app.route("/comparison2", methods=['GET', 'POST'])
-def comparison2():    
-    start_years = ['2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024']
-    end_years   = ['2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024']
-
-    # default value
-    selected_start = None
-    selected_end = None
-
-    if request.method == 'POST':
-        selected_start = request.form.get('startYear_select')
-        selected_end   = request.form.get('endYear_select')
-
-        if int(selected_start) > int(selected_end):
-            return render_template(
-                "comparison2.html",
-                start_years=start_years,
-                end_years=end_years,
-                selected_start=selected_start,
-                selected_end=selected_end,
-                error="Tahun mulai tidak boleh melebihi tahun akhir.",
-                show_segment="hide"
-            )
-
-        combine_hasil.generate_coastline_compare_new(int(selected_start), int(selected_end), coastlines_all)
-        combine_hasil.generate_coastline_compare_average(int(selected_start), int(selected_end), coastlines_all)
-
-        return render_template(
-            "comparison2.html",
-            start_years=start_years,
-            end_years=end_years,
-            selected_start=selected_start,
-            selected_end=selected_end,
-            show_segment="show"
-        )
-
-    return render_template("comparison2.html", start_years=start_years, end_years=end_years)
 
 if __name__ == "__main__":
     app.run(debug=True)
