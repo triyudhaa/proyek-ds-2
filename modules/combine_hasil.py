@@ -201,16 +201,16 @@ def interpolate_line(line, num_points=1000):
     return np.column_stack((x_interp, y_interp))
 
 """
-Mengubah figure (plot) menjadi array 
+Mengubah figure (plot) menjadi array
     Parameter
     ---------
-    fig: plot
-        .....
+    fig: figure
+        gambar plot hasil prediksi
     
     Return
     ------
     np.array(img)
-        ......
+        array hasil konversi figure dengan dimensi (Height, Weight, 3) 
 """
 def fig_to_array(fig):
     buf = io.BytesIO()
