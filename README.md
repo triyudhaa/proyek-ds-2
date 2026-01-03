@@ -6,7 +6,7 @@
 
 ## Spesifikasi Sistem
 - **Python** - bahasa pemrograman yang digunakan
-- **Google Earth Engine** - aplikasi untuk menjalakan model
+- **Google Earth Engine** - aplikasi untuk menjalankan model
 
 ## Penggunaan  
 Clone proyek proyek-ds-2
@@ -19,7 +19,6 @@ cd proyek-ds-2
 ```
 
 # Instalasi dan Pengaturan
-## 1. Persiapan Database 
 1. Pengguna harus memiliki akun GEE dengan mendaftarkan menggunakan akun Google atau membuat akun baru pada link `https://code.earthengine.google.com`
 2. Instalasi library Python yang akan dibutuhkan. Pastikan perangkat keras yang digunakan sudah memiliki instalasi bahasa Python. 
 ```
