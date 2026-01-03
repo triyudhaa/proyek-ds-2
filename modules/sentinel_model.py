@@ -13,7 +13,7 @@ np.random.seed(42)
 # 1) Authenticate & init
 # -------------------------
 try:
-    ee.Initialize(project="ee-axeltriyudha")
+    ee.Initialize(project="ee-junitahariyati0717")
 except ee.EEException:
     ee.Authenticate()
     ee.Initialize()
